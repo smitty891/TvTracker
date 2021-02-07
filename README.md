@@ -1,4 +1,4 @@
-# it4045c-project  
+# IT4045c-project (TvTracker)  
 ## Introduction  
 
 TvTracker allows users to build a list of movies/series they want to watch.
