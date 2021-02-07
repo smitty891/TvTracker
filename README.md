@@ -12,6 +12,15 @@ Youtube, etc the movie is available.
 Users can have a record of the movies/series they watched by marking those  
 
 "already watched". They have the ability to add comments as well.
+## Storyboard
+### Home/Browse page
+![homebrowse](https://user-images.githubusercontent.com/59851587/107153567-36023280-693c-11eb-8ffe-2ddce05dfc25.PNG)
+### Favorites
+![Favorites](https://user-images.githubusercontent.com/59851587/107153591-58944b80-693c-11eb-8148-779743f70550.jpg)
+### Login
+![login](https://user-images.githubusercontent.com/59851587/107153614-79f53780-693c-11eb-977a-89bf3adbb9fc.PNG)
+### Signup
+![signup](https://user-images.githubusercontent.com/59851587/107153628-972a0600-693c-11eb-80cb-893c4b5f92b9.PNG)
 
 ## Class Diagram
 
