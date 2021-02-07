@@ -5,7 +5,7 @@
 
   1_As a user, I want to be able to build a list of movies/series I want to watch.
 
-Example
+## Example
 
 Given: A feed of movies data are available
 
@@ -15,13 +15,13 @@ When: The user selects movie Cast Away
 
 Then: The user’s movie will be saved in a view list.
 
-Example
+## Example
 
 Given: Movies data are available
 
 When: The user/service searches for “gggrrrr,-wwgshdjjll”
 
-Then: (App name) will not return any results, and the user will not be able to save the 
+Then: TvTracker will not return any results, and the user will not be able to save the 
 
 movie.
 
@@ -29,27 +29,17 @@ movie.
 
 available.
 
-Example
+## Example
 
 Given: The user is logged in and has selected a previously-saved Cast Away movie
 
-When: The user can see in which streaming platform the movie is available
+When: The user enters the streaming platform to watch the movie/serie
 
 Then: The user can watch the movie. 
 
-Example
-
-Given: The user is logged in and has selected a previously-saved Cast Away movie
-
-When: The user searches for the streaming platform
-
-Then: No result to dislay as this movie not yet available at any of these streaming 
-
-services.
-
   3_As a user, I want to have a record of movies/series I watched.
 
-Example
+## Example
 
 Given: The user has a valid account and movies associated to that account.
 
@@ -59,8 +49,17 @@ watched"
 
 Then: The user will see the movies he/she already watched.
 
-4_As a user, I want to comment on movies I like it most.
-Example
+## Example
+
+Given: The user has a valid account and movies associated to that account.
+
+When: The user wants to delete Cast Away movie from the list
+
+Then: By selecting Cast Away movie from the list and clicking the button DELETE, the user is able to remove this movie from the list.
+
+4_As a user, I want to comment on movies I like it most.  
+
+## Example
 
 Given: The user watches a movie, he/she likes that movie 
 
