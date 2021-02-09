@@ -1,60 +1,27 @@
 package com.tvtracker.enterprise.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.sql.Timestamp;
 
+@Getter
+@Setter
 public class UserAccount {
+    /**
+     * UserAccount's unique identifier
+     */
     private String username;
     private String password;
     private String email;
     private Timestamp birthDate;
-    private Timestamp lastLogin;
+    /**
+     * Random generated character string used for authentication
+     */
     private String token;
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Timestamp getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(Timestamp birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public Timestamp getLastLogin() {
-        return lastLogin;
-    }
-
-    public void setLastLogin(Timestamp lastLogin) {
-        this.lastLogin = lastLogin;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
+    /**
+     * <p>Holds the time of the user's last successful login.</p>
+     * <p>Use this to check whether a token needs to be updated.</p>
+     */
+    private Timestamp lastLogin;
 }
