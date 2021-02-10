@@ -14,7 +14,7 @@ public class UserAccountServiceStub implements IUserAccountService {
     }
 
     @Override
-    public boolean isTokenValid(String token, UserAccount userAccount) {
+    public boolean isTokenValid(String token, String username) {
         return false;
     }
 

@@ -30,10 +30,10 @@ public interface IUserAccountService {
      * Indicates whether a token is valid for a given UserAccount
      *
      * @param token String to validate for the given user
-     * @param userAccount UserAccount Object to validate token against.
+     * @param username String uniquely identifying a user
      * @return boolean indicating whether the token is valid for the given user
      */
-    boolean isTokenValid(String token, UserAccount userAccount);
+    boolean isTokenValid(String token, String username);
 
     /**
      * Updates the token and lastLogin for a UserAccount
