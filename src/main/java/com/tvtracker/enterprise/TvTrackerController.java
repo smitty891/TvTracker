@@ -25,8 +25,19 @@ import java.util.List;
  *     This class also serves HTML based web pages for UI interactions.
  * </p>
  */
+
+
 @Controller
 public class TvTrackerController {
+
+    /**
+     * Handle the root endpoint(/) and return start page
+     * @return
+     */
+    @RequestMapping("/")
+    public String index(){
+        return "start";
+    }
     IUserAccountService userAccountService = new UserAccountServiceStub();
     IMediaEntryService mediaEntryService = new MediaEntryServiceStub();
 
