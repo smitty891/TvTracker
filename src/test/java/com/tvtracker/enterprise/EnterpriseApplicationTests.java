@@ -1,6 +1,7 @@
 package com.tvtracker.enterprise;
 
 import com.tvtracker.enterprise.dto.MediaEntry;
+import com.tvtracker.enterprise.dto.UserAccount;
 import com.tvtracker.enterprise.service.IMediaEntryService;
 import com.tvtracker.enterprise.service.IUserAccountService;
 import com.tvtracker.enterprise.service.MediaEntryServiceStub;
@@ -19,6 +20,33 @@ class EnterpriseApplicationTests {
 
     @Test
     void contextLoads() {
+    }
+
+    @Test
+    void userCreatesUserAccount_ReturnsValidAuthenticationToken() {
+        UserAccount userAccount = whenUserSendsUserAccountWithUniqueUsername();
+        returnsUserAccountWithValidToken(userAccount);
+    }
+
+    private UserAccount whenUserSendsUserAccountWithUniqueUsername() {
+        UserAccount userAccount = new UserAccount();
+        userAccount.setUsername("testUser");
+        userAccount.setPassword("testPassword");
+        userAccount.setEmail("testUser@testSite.com");
+
+        UserAccount newUserAccount = userAccountService.createUserAccount(userAccount);
+
+        Assert.notNull(newUserAccount, "Creating user account returned null indicating username is not unique.");
+
+        return newUserAccount;
+    }
+
+    private void returnsUserAccountWithValidToken(UserAccount userAccount) {
+        Assert.notNull(userAccount, "Creating user account returned null indicating username is not unique.");
+
+        boolean isValid = userAccountService.isTokenValid(userAccount.getToken(), userAccount.getUsername());
+
+        Assert.isTrue(isValid, "Token returned from user account creation was not valid.");
     }
 
     @Test
