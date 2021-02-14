@@ -37,7 +37,9 @@ public class TvTrackerController {
     @RequestMapping("/")
     public String index(){
         return "start";
+
     }
+
     IUserAccountService userAccountService = new UserAccountServiceStub();
     IMediaEntryService mediaEntryService = new MediaEntryServiceStub();
 
