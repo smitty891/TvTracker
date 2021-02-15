@@ -4,7 +4,8 @@ import com.tvtracker.enterprise.dto.MediaEntry;
 import com.tvtracker.enterprise.dto.UserAccount;
 import com.tvtracker.enterprise.service.IMediaEntryService;
 import com.tvtracker.enterprise.service.IUserAccountService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.tvtracker.enterprise.service.MediaEntryServiceStub;
+import com.tvtracker.enterprise.service.UserAccountServiceStub;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,6 +31,12 @@ public class TvTrackerController {
     IUserAccountService userAccountService;
     @Autowired
     IMediaEntryService mediaEntryService;
+
+    @RequestMapping("/")
+    public String index(){
+        return "start";
+
+    }
 
     /**
      * Create a new user account record from the user account data provided.
