@@ -31,6 +31,12 @@ public class TvTrackerController {
     @Autowired
     IMediaEntryService mediaEntryService;
 
+    @RequestMapping("/")
+    public String index(){
+        return "start";
+
+    }
+
     /**
      * Create a new user account record from the user account data provided.
      *
