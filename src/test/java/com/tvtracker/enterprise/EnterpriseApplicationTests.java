@@ -4,9 +4,8 @@ import com.tvtracker.enterprise.dto.MediaEntry;
 import com.tvtracker.enterprise.dto.UserAccount;
 import com.tvtracker.enterprise.service.IMediaEntryService;
 import com.tvtracker.enterprise.service.IUserAccountService;
-import com.tvtracker.enterprise.service.MediaEntryServiceStub;
-import com.tvtracker.enterprise.service.UserAccountServiceStub;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.Assert;
 
@@ -14,24 +13,28 @@ import java.util.List;
 
 @SpringBootTest
 class EnterpriseApplicationTests {
-
-    IUserAccountService userAccountService = new UserAccountServiceStub();
+    @Autowired
+    IUserAccountService userAccountService;
+    @Autowired
     IMediaEntryService mediaEntryService;
+
+    final String TEST_USERNAME = "testUser";
+    final String TEST_USER_PASSWORD = "testPassword";
 
     @Test
     void contextLoads() {
     }
 
     @Test
-    void userCreatesUserAccount_ReturnsValidAuthenticationToken() {
+    void userCreatesUserAccount_ReturnsValidAuthenticationToken() throws Exception {
         UserAccount userAccount = whenUserSendsUserAccountWithUniqueUsername();
         returnsUserAccountWithValidToken(userAccount);
     }
 
-    private UserAccount whenUserSendsUserAccountWithUniqueUsername() {
+    private UserAccount whenUserSendsUserAccountWithUniqueUsername() throws Exception {
         UserAccount userAccount = new UserAccount();
-        userAccount.setUsername("testUser");
-        userAccount.setPassword("testPassword");
+        userAccount.setUsername(TEST_USERNAME);
+        userAccount.setPassword(TEST_USER_PASSWORD);
         userAccount.setEmail("testUser@testSite.com");
 
         UserAccount newUserAccount = userAccountService.createUserAccount(userAccount);
@@ -41,7 +44,7 @@ class EnterpriseApplicationTests {
         return newUserAccount;
     }
 
-    private void returnsUserAccountWithValidToken(UserAccount userAccount) {
+    private void returnsUserAccountWithValidToken(UserAccount userAccount) throws Exception {
         Assert.notNull(userAccount, "Creating user account returned null indicating username is not unique.");
 
         boolean isValid = userAccountService.isTokenValid(userAccount.getToken(), userAccount.getUsername());
@@ -50,25 +53,55 @@ class EnterpriseApplicationTests {
     }
 
     @Test
-    void userUpdatesMediaEntry_ReturnsSuccessBoolean() {
-        // start with fresh media entry collection
-        mediaEntryService = new MediaEntryServiceStub();
+    void userCreatesMediaEntry_NewMediaEntryHasEntryId() throws Exception {
+        whenUserCreatesNewMediaEntry();
+        newMediaEntryHasEntryId();
+    }
 
-        givenUserHasRetrievedMediaEntries();
+    private void whenUserCreatesNewMediaEntry() throws Exception {
+        MediaEntry mediaEntry = new MediaEntry();
+        mediaEntry.setType("Movie");
+        mediaEntry.setUsername(TEST_USERNAME);
+        mediaEntry.setTitle("Easy Rider");
+        mediaEntry.setDescription("Instant classic!");
+        mediaEntry.setWatched(false);
+        mediaEntryService.createMediaEntry(mediaEntry);
+    }
+
+    private void newMediaEntryHasEntryId() throws Exception {
+        List<MediaEntry> entries = mediaEntryService.fetchMediaEntriesByUsername(TEST_USERNAME);
+        MediaEntry mediaEntry = entries.get(0);
+
+        boolean isCorrectEntry = mediaEntry.getDescription().equals("Instant classic!") && mediaEntry.getTitle().equals("Easy Rider");
+        Assert.isTrue(isCorrectEntry, "Media Entry values do not match the created media entry.");
+        Assert.isTrue(mediaEntry.getEntryId() > -1, "Media Entry was not given a valid id.");
+    }
+
+    @Test
+    void userUpdatesMediaEntry_ReturnsSuccessBoolean() throws Exception {
+        givenUserHasCreatedAMediaEntry();
         int entryId = whenUserUpdatesMediaEntry();
         returnIndicationOfSuccess(entryId);
     }
 
-    private void givenUserHasRetrievedMediaEntries() {
-        List<MediaEntry> mediaEntries = mediaEntryService.fetchMediaEntriesByUsername("testUser");
+    private void givenUserHasCreatedAMediaEntry() throws Exception {
+        MediaEntry mediaEntry = new MediaEntry();
+        mediaEntry.setType("Movie");
+        mediaEntry.setUsername(TEST_USERNAME);
+        mediaEntry.setTitle("Easy Rider");
+        mediaEntry.setDescription("Instant classic!");
+        mediaEntry.setWatched(false);
+        mediaEntryService.createMediaEntry(mediaEntry);
+
+        List<MediaEntry> mediaEntries = mediaEntryService.fetchMediaEntriesByUsername(TEST_USERNAME);
 
         Assert.notNull(mediaEntries, "User's collection of media entries was null.");
         Assert.noNullElements(mediaEntries, "A null element was found in user's collection of media entries.");
         Assert.notEmpty(mediaEntries, "User's collection of media entries was empty.");
     }
 
-    private int whenUserUpdatesMediaEntry() {
-        List<MediaEntry> mediaEntries = mediaEntryService.fetchMediaEntriesByUsername("testUser");
+    private int whenUserUpdatesMediaEntry() throws Exception {
+        List<MediaEntry> mediaEntries = mediaEntryService.fetchMediaEntriesByUsername(TEST_USERNAME);
         // update a media entry
         MediaEntry mediaEntry = mediaEntries.get(0);
         MediaEntry newMediaEntry = new MediaEntry();
@@ -86,9 +119,9 @@ class EnterpriseApplicationTests {
         return newMediaEntry.getEntryId();
     }
 
-    private void returnIndicationOfSuccess(int entryId) {
+    private void returnIndicationOfSuccess(int entryId) throws Exception {
         // check if media entry was successfully updated
-        List<MediaEntry> mediaEntries = mediaEntryService.fetchMediaEntriesByUsername("testUser");
+        List<MediaEntry> mediaEntries = mediaEntryService.fetchMediaEntriesByUsername(TEST_USERNAME);
         MediaEntry foundEntry = null;
         for(MediaEntry entry: mediaEntries) if (entry.getEntryId() == entryId) foundEntry = entry;
 
