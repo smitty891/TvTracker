@@ -1,29 +1,30 @@
 package com.tvtracker.enterprise.service;
 
+import com.tvtracker.enterprise.dao.IUserAccountDAO;
 import com.tvtracker.enterprise.dto.UserAccount;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
 
+@Service
 public class UserAccountServiceStub implements IUserAccountService {
+
+    @Autowired
+    IUserAccountDAO userAccountDAO;
 
     private static final SecureRandom secureRandom = new SecureRandom();
     private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
 
-    private List<UserAccount> userAccounts = new ArrayList<UserAccount>();
-
     @Override
-    public UserAccount createUserAccount(UserAccount userAccount) {
+    public UserAccount createUserAccount(UserAccount userAccount) throws Exception {
         // return null if user name isn't unique;
-        for(UserAccount account: userAccounts){
-            if(account.getUsername().equals(userAccount.getUsername())){
-                return null;
-            }
+        if(userAccountDAO.existsBy(userAccount.getUsername())){
+            return null;
         }
 
         String token = generateNewToken();
@@ -32,27 +33,21 @@ public class UserAccountServiceStub implements IUserAccountService {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         userAccount.setLastLogin(timestamp);
 
-        userAccounts.add(userAccount);
+        userAccountDAO.save(userAccount);
 
         return userAccount;
     }
 
     @Override
-    public UserAccount fetchUserAccount(String username) {
+    public UserAccount fetchUserAccount(String username) throws Exception {
         if(username == null)
             return null;
 
-        for(UserAccount account: userAccounts){
-            if(account.getUsername().equals(username)){
-                return account;
-            }
-        }
-
-        return null;
+        return userAccountDAO.fetch(username);
     }
 
     @Override
-    public boolean isTokenValid(String token, String username) {
+    public boolean isTokenValid(String token, String username) throws Exception {
         UserAccount userAccount = fetchUserAccount(username);
 
         if(userAccount == null || userAccount.getToken() == null || userAccount.getLastLogin() == null)
@@ -70,13 +65,15 @@ public class UserAccountServiceStub implements IUserAccountService {
     }
 
     @Override
-    public String updateUserToken(UserAccount userAccount) {
+    public String updateUserToken(UserAccount userAccount) throws Exception {
         if(userAccount == null)
             return null;
 
         String token = generateNewToken();
         userAccount.setToken(token);
         userAccount.setLastLogin(new Timestamp(System.currentTimeMillis()));
+
+        userAccountDAO.update(userAccount);
 
         return token;
     }
