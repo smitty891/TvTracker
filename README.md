@@ -1,17 +1,24 @@
 # IT4045c-project (TvTracker)  
 ## Introduction  
 
-TvTracker allows users to build a list of movies/series they want to watch.
+TvTracker allows users to build a list of movies/series they want to watch. They can search for movies by titles and save it to a view list. 
 
-they can search for movies by titles and save it to a view list. Users are able to see 
+Uers choose in which streaming platformes such as Netflix, Hulu, IMDB, Amazon Prime Videos, Youtube, etc to wwatch movies/series.
 
-in which streaming platformes such as Netflix, Hulu, IMDB, Amazon Prime Videos, 
+Additionally, TvTarcker will enable users to:
 
-Youtube, etc the movie is available.
+- Have record of movies/series watched by saving to view list
 
-Users can have a record of the movies/series they watched by marking those  
+- Mark those watched as "already watched"
 
-"already watched". They have the ability to add comments as well.
+- Update the view list by adding or removing movies/series.
+
+- Be able to add comments 
+
+- Upload images.
+
+
+
 
 ## Storyboard
 ### Home/Browse page
