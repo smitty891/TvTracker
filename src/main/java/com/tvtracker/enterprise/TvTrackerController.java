@@ -31,12 +31,20 @@ public class TvTrackerController {
     @Autowired
     IMediaEntryService mediaEntryService;
 
+    /**
+     * Handle the / endpoint
+     * @return start.html
+     */
     @RequestMapping("/")
     public String index(){
         return "start";
 
     }
 
+    /**
+     * Handle the /favorites endpoint
+     * @return favorites.html
+     */
     @RequestMapping("/favorites")
     public String favorites(){
         return "favorites";

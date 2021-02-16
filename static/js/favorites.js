@@ -19,25 +19,44 @@ function updateMediaEntry(mediaEntry) {
     xhr.send(JSON.stringify(mediaEntry));
 }
 
-function panelClickHandler(event) {
-    const panelHeader = event.currentTarget.querySelector(".panelHeader");
+function deleteMediaEntry(entryId) {
+    const username = window.sessionStorage.getItem("TvTrackerUsername");
+    const token = window.sessionStorage.getItem("TvTrackerToken");
+    const URL = "/removeMediaEntry/" + entryId + "/" + username + "/" + token;
 
-    if(panelHeader){
+    const xhr = new XMLHttpRequest();
+    xhr.open('DELETE', URL, true);
+
+    //xhr.setRequestHeader('Content-Type', 'application/json');
+
+    xhr.onload = function (result) {
+        if(result && result.target && result.target.status === 200){
+            getUsersMediaEntries();
+        }
+    }.bind(this);
+
+    xhr.send(null);
+}
+
+function editIconClickHandler(event) {
+    const infoElement = event.currentTarget;
+
+    if(infoElement){
         const platformDropdown = document.getElementById("platformDropdown");
         const descriptionTextBox = document.getElementById("reviewTextBox");
         const watchedCheckbox = document.getElementById("watchedCheckbox");
 
         // populate popup with media entry's values
-        watchedCheckbox.checked = (panelHeader.getAttribute("watched") == 'true');
-        platformDropdown.value = panelHeader.getAttribute("platform");
-        descriptionTextBox.value = unescape(panelHeader.getAttribute("description"));
+        watchedCheckbox.checked = (infoElement.getAttribute("watched") == 'true');
+        platformDropdown.value = infoElement.getAttribute("platform");
+        descriptionTextBox.value = unescape(infoElement.getAttribute("description"));
 
         // begin populating MediaEntry obj for updating
         let mediaEntry = {};
-        mediaEntry.entryId = panelHeader.getAttribute("entryId");
-        mediaEntry.type = panelHeader.getAttribute("mediaType");
-        mediaEntry.title = unescape(panelHeader.getAttribute("title"));
-        mediaEntry.imageUrl = event.currentTarget.querySelector('img').src;
+        mediaEntry.entryId = infoElement.getAttribute("entryId");
+        mediaEntry.type = infoElement.getAttribute("mediaType");
+        mediaEntry.title = unescape(infoElement.getAttribute("mediaTitle"));
+        mediaEntry.imageUrl = infoElement.getAttribute("imageUrl");
         mediaEntry.username = window.sessionStorage.getItem("TvTrackerUsername");
 
         // send updated MediaEntry obj on save button click
@@ -47,17 +66,38 @@ function panelClickHandler(event) {
             mediaEntry.watched = watchedCheckbox.checked;
 
             updateMediaEntry(mediaEntry);
+
+            hidePopup();
+            clearPopupInputs();
         }.bind(this);
     }
 
     showPopup();
 }
 
-function addPanelClickEvents() {
-    let panels = document.getElementsByClassName("e-panel-container");
+function deleteIconClickHandler(event) {
+    const entryId = event.currentTarget.getAttribute("entryId");
 
-    for(let i=0; i<panels.length; i++){
-        panels[i].onclick = panelClickHandler.bind(this);
+    const deleteEntry = confirm("Proceeding will permanently remove this media entry.");
+
+    if (deleteEntry == true) {
+        deleteMediaEntry(entryId);
+    } else {
+        console.log("You pressed Cancel!");
+    }
+}
+
+function addPanelClickEvents() {
+    const editNodes = document.getElementsByClassName("fa-pencil");
+    for(let i=0; i<editNodes.length; i++){
+        const editNode = editNodes[i];
+        editNode.onclick = editIconClickHandler.bind(this);
+    }
+
+    const deleteNodes = document.getElementsByClassName("fa-trash");
+    for(let i=0; i<deleteNodes.length; i++){
+        const deleteNode = deleteNodes[i];
+        deleteNode.onclick = deleteIconClickHandler.bind(this);
     }
 }
 
@@ -90,10 +130,18 @@ function addDashboardPanels(mediaEntries) {
             'col': col++,
             'sizeX': 1,
             'sizeY': 1,
-            header: '<div title=' + escape(item.title) + ' entryId=' + item.entryId + ' description='
-                + escape(item.description) + ' platform=' + item.platform + ' watched='
-                + item.watched + ' mediaType=' + item.type + ' class="panelHeader">' + item.title + '</div>',
-            content: '<div class="panelContent"><img src=' + imgUrl + ' class="mediaImg"></div>'
+            header: '<div>'
+                    + '<div class="panelHeaderIcons">'
+                        + '<i class="fa fa-pencil" mediaTitle=' + escape(item.title) + ' entryId=' + item.entryId + ' description='
+                            + escape(item.description) + ' platform=' + item.platform + ' imageUrl=' + imgUrl +  ' watched='
+                            + item.watched + ' mediaType=' + item.type + 'title="Edit" style="cursor:pointer;"></i>'
+                        + '<i class="fa fa-trash" entryId=' + item.entryId + ' title="Delete" style="padding-left:5px;cursor:pointer;"></i>'
+                    + '</div>'
+                    + '<div class="favoritesTitle">' + item.title + '</div>'
+                + '</div>',
+            content: '<div class="panelContent">'
+                        + '<img src=' + imgUrl + ' class="mediaImg">'
+                    + '</div>'
         };
 
         this.dashboard.addPanel(panel);
@@ -138,6 +186,12 @@ function showPopup() {
 function hidePopup() {
     const modal = document.getElementById("modelPopup");
     modal.style.display = "none";
+}
+
+function clearPopupInputs() {
+    document.getElementById("platformDropdown").value = "";
+    document.getElementById("reviewTextBox").value = "";
+    document.getElementById("watchedCheckbox").checked = false;
 }
 
 function startup() {

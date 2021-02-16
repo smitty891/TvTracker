@@ -21,7 +21,6 @@ public class MediaEntryDAOStub implements  IMediaEntryDAO {
      */
     @Override
     public MediaEntry save(MediaEntry mediaEntry) throws Exception {
-        mediaEntry.setEntryId(entriesByID.size());
         entriesByID.put(mediaEntry.getEntryId(), mediaEntry);
 
         if(entriesByUsername.containsKey(mediaEntry.getUsername())){

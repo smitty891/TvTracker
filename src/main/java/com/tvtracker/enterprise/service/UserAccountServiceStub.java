@@ -20,6 +20,14 @@ public class UserAccountServiceStub implements IUserAccountService {
     private static final SecureRandom secureRandom = new SecureRandom();
     private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
 
+    /**
+     * Creates a new UserAccount database record from a UserAccount object.
+     *
+     * Returns null if an error occurs or if an account already exists with the given username.
+     *
+     * @param userAccount UserAccount object representing a user to be created
+     * @return newly created UserAccount object
+     */
     @Override
     public UserAccount createUserAccount(UserAccount userAccount) throws Exception {
         // return null if user name isn't unique;
@@ -38,6 +46,14 @@ public class UserAccountServiceStub implements IUserAccountService {
         return userAccount;
     }
 
+    /**
+     * Retrieves a UserAccount object with the given username.
+     *
+     * Returns null if a user account with the given username could not be found.
+     *
+     * @param username String uniquely identifying a user
+     * @return UserAccount object for the given username
+     */
     @Override
     public UserAccount fetchUserAccount(String username) throws Exception {
         if(username == null)
@@ -46,6 +62,13 @@ public class UserAccountServiceStub implements IUserAccountService {
         return userAccountDAO.fetch(username);
     }
 
+    /**
+     * Indicates whether a token is valid for a given UserAccount
+     *
+     * @param token String to validate for the given user
+     * @param username String uniquely identifying a user
+     * @return boolean indicating whether the token is valid for the given user
+     */
     @Override
     public boolean isTokenValid(String token, String username) throws Exception {
         UserAccount userAccount = fetchUserAccount(username);
@@ -64,6 +87,12 @@ public class UserAccountServiceStub implements IUserAccountService {
         return Instant.now().isBefore(timeCutOff);
     }
 
+    /**
+     * Updates the token and lastLogin for a UserAccount
+     *
+     * @param userAccount UserAccount object to create a new valid token for
+     * @return new valid token for the given UserAccount
+     */
     @Override
     public String updateUserToken(UserAccount userAccount) throws Exception {
         if(userAccount == null)
@@ -78,6 +107,9 @@ public class UserAccountServiceStub implements IUserAccountService {
         return token;
     }
 
+    /**
+     * @return randomly generated character string for authentication
+     */
     private static String generateNewToken() {
         byte[] randomBytes = new byte[24];
         secureRandom.nextBytes(randomBytes);
