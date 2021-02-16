@@ -36,13 +36,16 @@ function panelClickHandler(event) {
             mediaEntry.watched = document.getElementById("watchedCheckbox").checked;
 
             saveMediaEntry(mediaEntry);
+
+            hidePopup();
+            clearPopupInputs();
         }.bind(this);
     }
 
     showPopup()
 }
 
-function showPopup(){
+function showPopup() {
     const modal = document.getElementById("modelPopup");
     modal.style.display = "block";
 }
@@ -50,6 +53,12 @@ function showPopup(){
 function hidePopup(){
     const modal = document.getElementById("modelPopup");
     modal.style.display = "none";
+}
+
+function clearPopupInputs() {
+    document.getElementById("platformDropdown").value = "";
+    document.getElementById("reviewTextBox").value = "";
+    document.getElementById("watchedCheckbox").checked = false;
 }
 
 function addPanelClickEvents() {
