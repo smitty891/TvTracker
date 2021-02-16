@@ -122,21 +122,87 @@
 <div id="modelPopup" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <input id="textBox"/>
-        <button style="margin: 10px;" id="submitBtn">Submit</button>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="watchedCheckbox">
+            <label class="form-check-label" for="watchedCheckbox">
+                Watched
+            </label>
+        </div>
+        <select id="platformDropdown">
+            <option value=""></option>
+            <option value="hulu">Hulu</option>
+            <option value="netflix">Netflix</option>
+            <option value="hbo">HBO</option>
+            <option value="disney+">Disney +</option>
+            <option value="amazon">Amazon</option>
+        </select>
+        <input id="reviewTextBox" class="form-control me-2" type="text" placeholder="Search" aria-label="Search">
+        <button id="saveBtn" class="btn btn-outline-success" style="margin: 10px;">Save</button>
     </div>
 </div>
 
 <script>
+    window.sessionStorage.setItem("TvTrackerUsername", "testUser");
+    window.sessionStorage.setItem("TvTrackerToken", "11222333aaabbbccc");
+
     const modal = document.getElementById("modelPopup");
+
+    function saveMediaEntry(mediaEntry) {
+        const username = window.sessionStorage.getItem("TvTrackerUsername");
+        const token = window.sessionStorage.getItem("TvTrackerToken");
+        const URL = "/addMediaEntry/" + username + "/" + token;
+        let totalResults = 0;
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', URL, true);
+
+        xhr.setRequestHeader('Content-Type', 'application/json');
+
+        xhr.onload = function (result) {
+            if(result && result.target && result.target.response){
+                const response = JSON.parse(result.target.response);
+                if(response.Response) {
+                    totalResults = response.totalResults;
+                    addDashboardPanels.call(this, response.Search);
+                } else {
+                    addDashboardPanels.call(this, []);
+                }
+
+                this.nextPageBtn.style.visibility = totalResults > (10*this.page) ? 'visible' : 'hidden';
+            }
+        }.bind(this);
+
+        xhr.send(JSON.stringify(mediaEntry));
+    }
+
+    function panelClickHandler(event) {
+        const panelHeader = event.currentTarget.querySelector(".panelHeader");
+
+        if(panelHeader){
+            let mediaEntry = {};
+            mediaEntry.entryId = panelHeader.getAttribute("imdbid").replace( /^\D+/g, '');;
+            mediaEntry.title = unescape(panelHeader.getAttribute("title"));
+            mediaEntry.imageUrl = event.currentTarget.querySelector('img').src;
+            mediaEntry.type = this.currentMediaType
+            mediaEntry.username = window.sessionStorage.getItem("TvTrackerUsername");
+
+            document.getElementById("saveBtn").onclick = function(){
+                mediaEntry.platform = document.getElementById("platformDropdown").value;
+                mediaEntry.description = document.getElementById("reviewTextBox").value;
+                mediaEntry.watched = document.getElementById("watchedCheckbox").checked;
+
+                saveMediaEntry(mediaEntry);
+            }.bind(this);
+        }
+
+        modal.style.display = "block";
+    }
 
     function addPanelClickEvents() {
         let panels = document.getElementsByClassName("e-panel-container");
 
         for(let i=0; i<panels.length; i++){
-            panels[i].onclick = function(){
-                modal.style.display = "block";
-            }
+            panels[i].onclick = panelClickHandler.bind(this);
         }
     }
 
@@ -185,7 +251,7 @@
                 'col': col++,
                 'sizeX': 1,
                 'sizeY': 1,
-                header: '<div class="panelHeader">' + item.Title + ' (' + item.Year + ')</div>',
+                header: '<div title=' + escape(item.Title) + ' year=' + item.Year + ' imdbID=' + item.imdbID + ' class="panelHeader">' + item.Title + '&nbsp;(' + item.Year + ')</div>',
                 content: '<div class="panelContent"><img src=' + imgUrl + ' class="mediaImg"></div>'
             };
 
