@@ -27,8 +27,6 @@ function deleteMediaEntry(entryId) {
     const xhr = new XMLHttpRequest();
     xhr.open('DELETE', URL, true);
 
-    //xhr.setRequestHeader('Content-Type', 'application/json');
-
     xhr.onload = function (result) {
         if(result && result.target && result.target.status === 200){
             getUsersMediaEntries();
@@ -124,6 +122,7 @@ function addDashboardPanels(mediaEntries) {
     for(let i=0; i<mediaEntries.length; i++){
         const item = mediaEntries[i];
         const imgUrl = item.imageUrl === 'N/A' ? '/images/noImage.png' : item.imageUrl;
+        const watchedCheckVisibility = (item.watched  ? 'visible' : 'hidden');
 
         const panel = {
             'row': row,
@@ -131,17 +130,21 @@ function addDashboardPanels(mediaEntries) {
             'sizeX': 1,
             'sizeY': 1,
             header: '<div>'
-                    + '<div class="panelHeaderIcons">'
+                    + '<div class="watchedCheckIcon" style="visibility: ' + watchedCheckVisibility + '">'
+                        + '<i class="fa fa-check"></i>'
+                    + '</div>'
+                    + '<div class="rightSideIcons">'
                         + '<i class="fa fa-pencil" mediaTitle=' + escape(item.title) + ' entryId=' + item.entryId + ' description='
                             + escape(item.description) + ' platform=' + item.platform + ' imageUrl=' + imgUrl +  ' watched='
-                            + item.watched + ' mediaType=' + item.type + 'title="Edit" style="cursor:pointer;"></i>'
+                            + item.watched + ' mediaType=' + item.type + ' title="Edit" style="cursor:pointer;"></i>'
                         + '<i class="fa fa-trash" entryId=' + item.entryId + ' title="Delete" style="padding-left:5px;cursor:pointer;"></i>'
                     + '</div>'
                     + '<div class="favoritesTitle">' + item.title + '</div>'
-                + '</div>',
+                + '</divwatchedCheckIcon>',
             content: '<div class="panelContent">'
                         + '<img src=' + imgUrl + ' class="mediaImg">'
                     + '</div>'
+                    + '<div class="panelDescription">' + item.description + '</div>'
         };
 
         this.dashboard.addPanel(panel);

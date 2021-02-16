@@ -13,15 +13,22 @@ h1{
 .panelHeader {
     text-align: center;
     padding-top: .8vw;
-    font-size: .7vw;
+    font-size: .8vw;
     color: blue;
     font-weight: bold;
 }
 
-.panelHeaderIcons {
+.watchedCheckIcon {
+    float:left;
+    padding-top: .5vw;
+    font-size: 1vw;
+    color: LimeGreen;
+}
+
+.rightSideIcons {
     float:right;
     padding-top: .5vw;
-    font-size: .8vw;
+    font-size: 1vw;
 }
 
 .panelContent {
@@ -31,10 +38,17 @@ h1{
     text-align: center;
 }
 
+.panelDescription {
+    color: rgba(0, 0, 0, 0.54);
+    text-align: center;
+    font-size: .7vw;
+    font-weight: bold;
+}
+
 .favoritesTitle {
     width:100%;
     text-align: center;
-    font-size: .7vw;
+    font-size: .8vw;
     color: blue;
     font-weight: bold;
 }
