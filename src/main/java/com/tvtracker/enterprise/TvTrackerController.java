@@ -37,6 +37,11 @@ public class TvTrackerController {
 
     }
 
+    @RequestMapping("/favorites")
+    public String favorites(){
+        return "favorites";
+    }
+
     /**
      * Create a new user account record from the user account data provided.
      *
