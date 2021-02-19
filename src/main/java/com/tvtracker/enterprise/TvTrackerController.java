@@ -86,8 +86,8 @@ public class TvTrackerController {
      * @param password String that authenticates a user
      * @return a valid user token for session authentication
      */
-    @GetMapping("/authenticate/{username}/{password}")
-    public ResponseEntity authenticateUser(@PathVariable("username") String username, @PathVariable("password") String password) {
+    @GetMapping("/authenticate")
+    public ResponseEntity authenticateUser(@RequestParam(value="username", required=true) String username, @RequestParam(value="password", required=true) String password) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -115,8 +115,8 @@ public class TvTrackerController {
      * @param username String uniquely identifying a user
      * @return List user's media entries
      */
-    @GetMapping("/getMediaEntries/{username}/{token}")
-    public ResponseEntity getUsersMediaEntries(@PathVariable("username") String username, @PathVariable("token") String token) {
+    @GetMapping("/getMediaEntries")
+    public ResponseEntity getUsersMediaEntries(@RequestParam(value="username", required=true) String username, @RequestParam(value="token", required=true) String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -145,8 +145,8 @@ public class TvTrackerController {
      * @param mediaEntry a JSON representation of a MediaEntry object
      * @return HttpStatus
      */
-    @PutMapping(value="/editMediaEntry/{username}/{token}", consumes="application/json", produces="application/json")
-    public ResponseEntity editMediaEntry(@RequestBody MediaEntry mediaEntry, @PathVariable("username") String username, @PathVariable("token") String token) {
+    @PutMapping(value="/editMediaEntry", consumes="application/json", produces="application/json")
+    public ResponseEntity editMediaEntry(@RequestBody MediaEntry mediaEntry, @RequestParam(value="username", required=true) String username, @RequestParam(value="token", required=true) String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -180,8 +180,8 @@ public class TvTrackerController {
      * @param entryId integer uniquely identifying the media entry record
      * @return HttpStatus
      */
-    @DeleteMapping("/removeMediaEntry/{entryId}/{username}/{token}")
-    public ResponseEntity removeMediaEntry(@PathVariable("entryId") int entryId, @PathVariable("username") String username, @PathVariable("token") String token) {
+    @DeleteMapping("/removeMediaEntry")
+    public ResponseEntity removeMediaEntry(@RequestParam(value="entryId", required=true) int entryId, @RequestParam(value="username", required=true) String username, @RequestParam(value="token", required=true) String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -215,8 +215,8 @@ public class TvTrackerController {
      * @param mediaEntry a JSON representation of a MediaEntry object
      * @return HttpStatus
      */
-    @PostMapping(value="/addMediaEntry/{username}/{token}", consumes="application/json", produces="application/json")
-    public ResponseEntity addMediaEntry(@RequestBody MediaEntry mediaEntry, @PathVariable("username") String username, @PathVariable("token") String token) {
+    @PostMapping(value="/addMediaEntry", consumes="application/json", produces="application/json")
+    public ResponseEntity addMediaEntry(@RequestBody MediaEntry mediaEntry, @RequestParam(value="username", required=true) String username, @RequestParam(value="token", required=true) String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
