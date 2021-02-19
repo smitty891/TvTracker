@@ -128,7 +128,7 @@ function callSearchAPI(text, type, page) {
     xhr.onload = function (result) {
         if(result && result.target && result.target.response){
             const response = JSON.parse(result.target.response);
-            if(response.Response) {
+            if(response.Response === "True") {
                 totalResults = response.totalResults;
                 addDashboardPanels.call(this, response.Search);
             } else {
