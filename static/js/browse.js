@@ -3,7 +3,7 @@ window.sessionStorage.setItem("TvTrackerUsername", "testUser");
 function saveMediaEntry(mediaEntry) {
     const username = window.sessionStorage.getItem("TvTrackerUsername");
     const token = window.sessionStorage.getItem("TvTrackerToken");
-    const URL = "/addMediaEntry/" + username + "/" + token;
+    const URL = "/addMediaEntry?username=" + username + "&token=" + token
 
     const xhr = new XMLHttpRequest();
     xhr.open('POST', URL, true);

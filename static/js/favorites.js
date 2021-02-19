@@ -3,7 +3,7 @@ window.sessionStorage.setItem("TvTrackerUsername", "testUser");
 function updateMediaEntry(mediaEntry) {
     const username = window.sessionStorage.getItem("TvTrackerUsername");
     const token = window.sessionStorage.getItem("TvTrackerToken");
-    const URL = "/editMediaEntry/" + username + "/" + token;
+    const URL = "/editMediaEntry?username=" + username + "&token=" + token
 
     const xhr = new XMLHttpRequest();
     xhr.open('PUT', URL, true);
@@ -22,7 +22,7 @@ function updateMediaEntry(mediaEntry) {
 function deleteMediaEntry(entryId) {
     const username = window.sessionStorage.getItem("TvTrackerUsername");
     const token = window.sessionStorage.getItem("TvTrackerToken");
-    const URL = "/removeMediaEntry/" + entryId + "/" + username + "/" + token;
+    const URL = "/removeMediaEntry?entryId=" + entryId + "&username=" + username + "&token=" + token
 
     const xhr = new XMLHttpRequest();
     xhr.open('DELETE', URL, true);
@@ -161,7 +161,7 @@ function addDashboardPanels(mediaEntries) {
 function getUsersMediaEntries() {
     const username = window.sessionStorage.getItem("TvTrackerUsername");
     const token = window.sessionStorage.getItem("TvTrackerToken");
-    const URL = "/getMediaEntries/" + username + "/" + token;
+    const URL = "/getMediaEntries?username=" + username + "&token=" + token;
 
     const xhr = new XMLHttpRequest();
     xhr.open('GET', URL, true);
