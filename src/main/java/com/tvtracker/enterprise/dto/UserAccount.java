@@ -9,16 +9,18 @@ import java.sql.Timestamp;
 @Setter
 public class UserAccount {
     /**
-     * UserAccount's unique identifier
+     * UserAccount's unique identifiers
      */
     private String username;
     private String password;
     private String email;
     private Timestamp birthDate;
+
     /**
      * Random generated character string used for authentication
      */
     private String token;
+
     /**
      * <p>Holds the time of the user's last successful login.</p>
      * <p>Use this to check whether a token needs to be updated.</p>

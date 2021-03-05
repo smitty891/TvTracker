@@ -36,7 +36,7 @@ public interface IMediaEntryDAO {
          * @param entryId integer uniquely identifying a MediaEntry record
          * @return MediaEntry object representation of corresponding database record
          */
-        MediaEntry fetch(int entryId) throws Exception;
+        MediaEntry fetchByID(int entryId) throws Exception;
 
         /**
          * Method for deleting a single MediaEntry record in the database
