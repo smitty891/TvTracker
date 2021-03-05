@@ -7,14 +7,15 @@ import java.sql.Timestamp;
 
 @Getter
 @Setter
+
 public class UserAccount {
     /**
      * UserAccount's unique identifier
      */
+    private int userId;
     private String username;
     private String password;
     private String email;
-    private Timestamp birthDate;
     /**
      * Random generated character string used for authentication
      */
