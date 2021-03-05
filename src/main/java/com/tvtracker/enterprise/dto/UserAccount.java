@@ -7,10 +7,12 @@ import java.sql.Timestamp;
 
 @Getter
 @Setter
+
 public class UserAccount {
     /**
      * UserAccount's unique identifiers
      */
+    private int userId;
     private String username;
     private String password;
     private String email;
