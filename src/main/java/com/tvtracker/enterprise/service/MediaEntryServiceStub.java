@@ -21,12 +21,10 @@ public class MediaEntryServiceStub implements IMediaEntryService {
      */
     @Override
     public boolean createMediaEntry(MediaEntry mediaEntry) throws Exception {
-        if(mediaEntry == null){
+        if(mediaEntry == null) {
             return false;
         }
-
         mediaEntryDAO.save(mediaEntry);
-
         return true;
     }
 
@@ -38,12 +36,10 @@ public class MediaEntryServiceStub implements IMediaEntryService {
      */
     @Override
     public boolean updateMediaEntry(MediaEntry mediaEntry) throws Exception {
-        if(mediaEntry == null){
+        if(mediaEntry == null) {
             return false;
         }
-
         mediaEntryDAO.update(mediaEntry);
-
         return true;
     }
 
@@ -56,7 +52,6 @@ public class MediaEntryServiceStub implements IMediaEntryService {
     @Override
     public boolean deleteMediaEntry(int entryId) throws Exception {
         mediaEntryDAO.delete(entryId);
-
         return true;
     }
 

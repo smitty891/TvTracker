@@ -31,7 +31,7 @@ public class UserAccountServiceStub implements IUserAccountService {
     @Override
     public UserAccount createUserAccount(UserAccount userAccount) throws Exception {
         // return null if user name isn't unique;
-        if(userAccountDAO.existsBy(userAccount.getUsername())){
+        if(userAccountDAO.existsBy(userAccount.getUsername())) {
             return null;
         }
 
@@ -56,8 +56,9 @@ public class UserAccountServiceStub implements IUserAccountService {
      */
     @Override
     public UserAccount fetchUserAccount(String username) throws Exception {
-        if(username == null)
+        if(username == null) {
             return null;
+        }
 
         return userAccountDAO.fetch(username);
     }
@@ -73,11 +74,13 @@ public class UserAccountServiceStub implements IUserAccountService {
     public boolean isTokenValid(String token, String username) throws Exception {
         UserAccount userAccount = fetchUserAccount(username);
 
-        if(userAccount == null || userAccount.getToken() == null || userAccount.getLastLogin() == null)
+        if(userAccount == null || userAccount.getToken() == null || userAccount.getLastLogin() == null) {
             return false;
+        }
 
-        if(!userAccount.getToken().equals(token))
+        if(!userAccount.getToken().equals(token)) {
             return false;
+        }
 
         // Verify user's token was created within the last hour
         Instant lastLogin = userAccount.getLastLogin().toInstant();
@@ -95,8 +98,9 @@ public class UserAccountServiceStub implements IUserAccountService {
      */
     @Override
     public String updateUserToken(UserAccount userAccount) throws Exception {
-        if(userAccount == null)
+        if(userAccount == null) {
             return null;
+        }
 
         String token = generateNewToken();
         userAccount.setToken(token);
