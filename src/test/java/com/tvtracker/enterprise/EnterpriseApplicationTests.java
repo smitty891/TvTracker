@@ -20,6 +20,8 @@ class EnterpriseApplicationTests {
 
     final String TEST_USERNAME = "testUser";
     final String TEST_USER_PASSWORD = "testPassword";
+    MediaEntry mediaEntry = new MediaEntry();
+    UserAccount userAccount = new UserAccount();
 
     @Test
     void contextLoads() {
@@ -32,7 +34,6 @@ class EnterpriseApplicationTests {
     }
 
     private UserAccount whenUserSendsUserAccountWithUniqueUsername() throws Exception {
-        UserAccount userAccount = new UserAccount();
         userAccount.setUsername(TEST_USERNAME);
         userAccount.setPassword(TEST_USER_PASSWORD);
         userAccount.setEmail("testUser@testSite.com");
@@ -59,7 +60,6 @@ class EnterpriseApplicationTests {
     }
 
     private void whenUserCreatesNewMediaEntry() throws Exception {
-        MediaEntry mediaEntry = new MediaEntry();
         mediaEntry.setType("Movie");
         mediaEntry.setUsername(TEST_USERNAME);
         mediaEntry.setTitle("Easy Rider");
@@ -85,7 +85,6 @@ class EnterpriseApplicationTests {
     }
 
     private void givenUserHasCreatedAMediaEntry() throws Exception {
-        MediaEntry mediaEntry = new MediaEntry();
         mediaEntry.setType("Movie");
         mediaEntry.setUsername(TEST_USERNAME);
         mediaEntry.setTitle("Easy Rider");
