@@ -3,7 +3,7 @@ window.sessionStorage.setItem("TvTrackerUsername", "testUser");
 function saveMediaEntry(mediaEntry) {
     const username = window.sessionStorage.getItem("TvTrackerUsername");
     const token = window.sessionStorage.getItem("TvTrackerToken");
-    const URL = "/addMediaEntry?username=" + username + "&token=" + token
+    const URL = "/addMediaEntry?username=" + username + "&token=" + token;
 
     const xhr = new XMLHttpRequest();
     xhr.open('POST', URL, true);
@@ -27,7 +27,7 @@ function panelClickHandler(event) {
         mediaEntry.entryId = panelHeader.getAttribute("imdbid").replace( /^\D+/g, '');
         mediaEntry.title = unescape(panelHeader.getAttribute("title"));
         mediaEntry.imageUrl = event.currentTarget.querySelector('img').src;
-        mediaEntry.type = this.currentMediaType
+        mediaEntry.type = this.currentMediaType;
         mediaEntry.username = window.sessionStorage.getItem("TvTrackerUsername");
 
         document.getElementById("saveBtn").onclick = function(){
