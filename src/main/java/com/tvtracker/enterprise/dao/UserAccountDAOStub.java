@@ -34,7 +34,7 @@ public class UserAccountDAOStub implements IUserAccountDAO {
      * @return UserAccount representation of the corresponding UserAccount database record
      */
     @Override
-    public UserAccount fetch(String username) throws Exception {
+    public UserAccount fetch(String username) {
         return userAccounts.get(username);
     }
 
@@ -45,7 +45,7 @@ public class UserAccountDAOStub implements IUserAccountDAO {
      * @return boolean indicating whether a record exists for this username
      */
     @Override
-    public boolean existsBy(String username) throws Exception {
+    public boolean existsBy(String username) {
         return userAccounts.containsKey(username);
     }
 
@@ -55,7 +55,7 @@ public class UserAccountDAOStub implements IUserAccountDAO {
      * @param username String uniquely identifying a UserAccount record
      */
     @Override
-    public void delete(String username) throws Exception {
+    public void delete(String username) {
         userAccounts.remove(username);
     }
 

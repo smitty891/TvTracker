@@ -41,7 +41,7 @@ public class MediaEntryDAOStub implements  IMediaEntryDAO {
      * @return List of MediaEntry objects belonging to the given user
      */
     @Override
-    public List<MediaEntry> fetchByUsername(String username) throws Exception {
+    public List<MediaEntry> fetchByUsername(String username) {
         return new ArrayList(entriesByUsername.get(username).values());
     }
 
@@ -52,7 +52,7 @@ public class MediaEntryDAOStub implements  IMediaEntryDAO {
      * @return MediaEntry object representation of corresponding database record
      */
     @Override
-    public MediaEntry fetch(int entryId) throws Exception {
+    public MediaEntry fetch(int entryId) {
         return entriesByID.get(entryId);
     }
 
@@ -62,7 +62,7 @@ public class MediaEntryDAOStub implements  IMediaEntryDAO {
      * @param entryId integer uniquely identifying a MediaEntry record
      */
     @Override
-    public void delete(int entryId) throws Exception {
+    public void delete(int entryId) {
         MediaEntry entry = entriesByID.remove(entryId);
         if(entry != null) {
             entriesByUsername.get(entry.getUsername()).remove(entryId);
