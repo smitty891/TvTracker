@@ -9,8 +9,8 @@ import java.util.List;
 
 @Component
 public class MediaEntryDAOStub implements  IMediaEntryDAO {
-    HashMap<Integer, MediaEntry> entriesByID = new HashMap<Integer, MediaEntry>();
-    HashMap<String, HashMap<Integer, MediaEntry>> entriesByUsername = new HashMap<String, HashMap<Integer, MediaEntry>>();
+    HashMap<Integer, MediaEntry> entriesByID = new HashMap<>();
+    HashMap<String, HashMap<Integer, MediaEntry>> entriesByUsername = new HashMap<>();
 
     /**
      * Method for creating a new MediaEntry record in the database
@@ -26,7 +26,7 @@ public class MediaEntryDAOStub implements  IMediaEntryDAO {
         if(entriesByUsername.containsKey(mediaEntry.getUsername())){
             entriesByUsername.get(mediaEntry.getUsername()).put(mediaEntry.getEntryId(), mediaEntry);
         } else {
-            HashMap<Integer, MediaEntry> entries = new HashMap<Integer, MediaEntry>();
+            HashMap<Integer, MediaEntry> entries = new HashMap<>();
             entries.put(mediaEntry.getEntryId(), mediaEntry);
             entriesByUsername.put(mediaEntry.getUsername(), entries);
         }
