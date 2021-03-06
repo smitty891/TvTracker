@@ -3,7 +3,7 @@ window.sessionStorage.setItem("TvTrackerUsername", "testUser");
 function updateMediaEntry(mediaEntry) {
     const username = window.sessionStorage.getItem("TvTrackerUsername");
     const token = window.sessionStorage.getItem("TvTrackerToken");
-    const URL = "/editMediaEntry?username=" + username + "&token=" + token
+    const URL = "/editMediaEntry?username=" + username + "&token=" + token;
 
     const xhr = new XMLHttpRequest();
     xhr.open('PUT', URL, true);
@@ -22,7 +22,7 @@ function updateMediaEntry(mediaEntry) {
 function deleteMediaEntry(entryId) {
     const username = window.sessionStorage.getItem("TvTrackerUsername");
     const token = window.sessionStorage.getItem("TvTrackerToken");
-    const URL = "/removeMediaEntry?entryId=" + entryId + "&username=" + username + "&token=" + token
+    const URL = "/removeMediaEntry?entryId=" + entryId + "&username=" + username + "&token=" + token;
 
     const xhr = new XMLHttpRequest();
     xhr.open('DELETE', URL, true);
@@ -199,7 +199,7 @@ function clearPopupInputs() {
 
 function startup() {
     const popupCloseBtn = document.getElementById("popupCloseBtn");
-    popupCloseBtn.onclick = hidePopup
+    popupCloseBtn.onclick = hidePopup;
 
     getUsersMediaEntries();
 }
