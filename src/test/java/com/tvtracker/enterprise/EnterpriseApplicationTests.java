@@ -38,11 +38,11 @@ class EnterpriseApplicationTests {
         userAccount.setPassword(TEST_USER_PASSWORD);
         userAccount.setEmail("testUser@testSite.com");
 
-        UserAccount newUserAccount = userAccountService.createUserAccount(userAccount);
+        userAccount = userAccountService.createUserAccount(userAccount);
 
-        Assert.notNull(newUserAccount, "Creating user account returned null indicating username is not unique.");
+        Assert.notNull(userAccount, "Creating user account returned null indicating username is not unique.");
 
-        return newUserAccount;
+        return userAccount;
     }
 
     private void returnsUserAccountWithValidToken(UserAccount userAccount) throws Exception {
@@ -70,7 +70,7 @@ class EnterpriseApplicationTests {
 
     private void newMediaEntryHasEntryId() throws Exception {
         List<MediaEntry> entries = mediaEntryService.fetchMediaEntriesByUsername(TEST_USERNAME);
-        MediaEntry mediaEntry = entries.get(0);
+        mediaEntry = entries.get(0);
 
         boolean isCorrectEntry = mediaEntry.getDescription().equals("Instant classic!") && mediaEntry.getTitle().equals("Easy Rider");
         Assert.isTrue(isCorrectEntry, "Media Entry values do not match the created media entry.");
@@ -102,20 +102,19 @@ class EnterpriseApplicationTests {
     private int whenUserUpdatesMediaEntry() throws Exception {
         List<MediaEntry> mediaEntries = mediaEntryService.fetchMediaEntriesByUsername(TEST_USERNAME);
         // update a media entry
-        MediaEntry mediaEntry = mediaEntries.get(0);
-        MediaEntry newMediaEntry = new MediaEntry();
-        newMediaEntry.setEntryId(mediaEntry.getEntryId());
-        newMediaEntry.setUsername(mediaEntry.getUsername());
-        newMediaEntry.setTitle(mediaEntry.getTitle());
-        newMediaEntry.setType(mediaEntry.getType());
-        newMediaEntry.setDescription("Terrible");
-        newMediaEntry.setPlatform("Hulu");
-        newMediaEntry.setWatched(true);
+        mediaEntry = mediaEntries.get(0);
+        mediaEntry.setEntryId(mediaEntry.getEntryId());
+        mediaEntry.setUsername(mediaEntry.getUsername());
+        mediaEntry.setTitle(mediaEntry.getTitle());
+        mediaEntry.setType(mediaEntry.getType());
+        mediaEntry.setDescription("Terrible");
+        mediaEntry.setPlatform("Hulu");
+        mediaEntry.setWatched(true);
 
-        boolean success = mediaEntryService.updateMediaEntry(newMediaEntry);
+        boolean success = mediaEntryService.updateMediaEntry(mediaEntry);
         Assert.isTrue(success, "An error occurred while updating a media entry.");
 
-        return newMediaEntry.getEntryId();
+        return mediaEntry.getEntryId();
     }
 
     private void returnIndicationOfSuccess(int entryId) throws Exception {
