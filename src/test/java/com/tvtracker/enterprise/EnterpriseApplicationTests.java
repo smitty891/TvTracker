@@ -29,7 +29,7 @@ class EnterpriseApplicationTests {
 
     @Test
     void userCreatesUserAccount_ReturnsValidAuthenticationToken() throws Exception {
-        UserAccount userAccount = whenUserSendsUserAccountWithUniqueUsername();
+        userAccount = whenUserSendsUserAccountWithUniqueUsername();
         returnsUserAccountWithValidToken(userAccount);
     }
 

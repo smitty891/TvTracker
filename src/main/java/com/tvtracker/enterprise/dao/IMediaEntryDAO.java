@@ -1,6 +1,7 @@
 package com.tvtracker.enterprise.dao;
 
 import com.tvtracker.enterprise.dto.MediaEntry;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 

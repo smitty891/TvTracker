@@ -2,10 +2,11 @@ package com.tvtracker.enterprise.dao;
 
 import com.tvtracker.enterprise.dto.UserAccount;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 
-@Component
+@Repository
 public class UserAccountDAOStub implements IUserAccountDAO {
     HashMap<String, UserAccount> userAccounts = new HashMap<>();
 

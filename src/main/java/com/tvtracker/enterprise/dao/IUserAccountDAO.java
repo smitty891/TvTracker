@@ -1,6 +1,7 @@
 package com.tvtracker.enterprise.dao;
 
 import com.tvtracker.enterprise.dto.UserAccount;
+import org.springframework.stereotype.Repository;
 
 /**
  * Data Access Object for UserAccounts

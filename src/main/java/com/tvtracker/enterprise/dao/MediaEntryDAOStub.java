@@ -2,12 +2,13 @@ package com.tvtracker.enterprise.dao;
 
 import com.tvtracker.enterprise.dto.MediaEntry;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-@Component
+@Repository
 public class MediaEntryDAOStub implements  IMediaEntryDAO {
     HashMap<Integer, MediaEntry> entriesByID = new HashMap<>();
     HashMap<String, HashMap<Integer, MediaEntry>> entriesByUsername = new HashMap<>();
