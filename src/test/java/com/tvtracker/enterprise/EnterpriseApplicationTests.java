@@ -127,4 +127,36 @@ class EnterpriseApplicationTests {
         boolean updated = foundEntry.isWatched() && foundEntry.getPlatform().equals("Hulu") && foundEntry.getDescription().equals("Terrible");
         Assert.isTrue(updated, "Media entry's fields were not updated.");
     }
+
+    @Test
+    void userDeletesMediaEntry_ReturnsSuccessBoolean() throws Exception {
+        givenUserHasCreatedCastAwayEntryAndHasValidAccount();
+        int entryId = whenUserDeletesMediaEntry();
+        thenReturnsMediaEntryNoLongerInUsersLibrary(entryId);
+    }
+
+    private void givenUserHasCreatedCastAwayEntryAndHasValidAccount() throws Exception {
+        mediaEntry.setType("Movie");
+        mediaEntry.setUsername(TEST_USERNAME);
+        mediaEntry.setTitle("Cast Away");
+        mediaEntry.setDescription("WILSON!");
+        mediaEntry.setWatched(true);
+        mediaEntryService.createMediaEntry(mediaEntry);
+        whenUserDeletesMediaEntry();
+    }
+
+    private int whenUserDeletesMediaEntry() throws Exception {
+        boolean success = mediaEntryService.deleteMediaEntry(0);
+        Assert.isTrue(success, "An error occurred while deleting a media entry.");
+
+        return mediaEntry.getEntryId();
+    }
+
+    private void thenReturnsMediaEntryNoLongerInUsersLibrary(int entryId) throws Exception {
+        List<MediaEntry> mediaEntries = mediaEntryService.fetchMediaEntriesByUsername(TEST_USERNAME);
+        MediaEntry foundEntry = null;
+        for(MediaEntry entry: mediaEntries) if (entry.getEntryId() == entryId) foundEntry = entry;
+
+        Assert.isNull(foundEntry, "The updated media entry was deleted.");
+    }
 }

@@ -38,7 +38,6 @@ public class TvTrackerController {
     @RequestMapping("/")
     public String index(){
         return "start";
-
     }
 
     /**
