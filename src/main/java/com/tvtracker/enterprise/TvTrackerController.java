@@ -1,3 +1,7 @@
+/**
+ * @author add author name here
+ * @since   Add Date Here
+ */
 package com.tvtracker.enterprise;
 
 import com.tvtracker.enterprise.dto.MediaEntry;

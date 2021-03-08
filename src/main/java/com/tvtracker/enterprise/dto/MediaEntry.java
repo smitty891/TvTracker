@@ -1,11 +1,18 @@
+/**
+ * @author add author name here
+ * @since   Add Date Here
+ */
 package com.tvtracker.enterprise.dto;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class MediaEntry {
+
+public @Data
+class  MediaEntry {
     /**
      * MediaEntry's unique identifier
      */
