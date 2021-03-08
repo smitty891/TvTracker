@@ -5,6 +5,7 @@ import com.tvtracker.enterprise.dto.UserAccount;
 import com.tvtracker.enterprise.service.IMediaEntryService;
 import com.tvtracker.enterprise.service.IUserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -25,7 +27,7 @@ import java.util.List;
  * </p>
  */
 @Controller
-public class TvTrackerController {
+public class TvTrackerController implements ErrorController {
     @Autowired
     IUserAccountService userAccountService;
     @Autowired
@@ -236,5 +238,21 @@ public class TvTrackerController {
             e.printStackTrace();
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    /**
+     * Returns the error template whenever an error occurs
+     * @param request The request that caused the error
+     * @return the error.html Thymeleaf template
+     * @author Stephen Meckstroth
+     */
+    @RequestMapping("/error")
+    public String handleError(HttpServletRequest request) {
+        return "error";
+    }
+
+    @Override
+    public String getErrorPath() {
+        return null;
     }
 }
