@@ -23,13 +23,7 @@ public class MediaEntryDAO extends BaseDAO implements IMediaEntryDAO {
      */
     @Override
     public boolean save(MediaEntry mediaEntry) {
-        setInsertValue("title", mediaEntry.getTitle());
-        setInsertValue("type", mediaEntry.getType());
-        setInsertValue("platform", mediaEntry.getPlatform());
-        setInsertValue("description", mediaEntry.getDescription());
-        setInsertValue("imageUrl", mediaEntry.getImageUrl());
-        setInsertValue("watched", mediaEntry.isWatched() ? 1 : 0);
-        setInsertValue("username", mediaEntry.getUsername());
+        setAllColumnValues(mediaEntry);
         return insert();
     }
 
@@ -82,15 +76,24 @@ public class MediaEntryDAO extends BaseDAO implements IMediaEntryDAO {
      */
     @Override
     public boolean update(MediaEntry mediaEntry) {
-        updateColumn("title", mediaEntry.getTitle());
-        updateColumn("type", mediaEntry.getType());
-        updateColumn("platform", mediaEntry.getPlatform());
-        updateColumn("description", mediaEntry.getDescription());
-        updateColumn("imageUrl", mediaEntry.getImageUrl());
-        updateColumn("watched", mediaEntry.isWatched() ? 1 : 0);
-        updateColumn("username", mediaEntry.getUsername());
+        setAllColumnValues(mediaEntry);
         addWhere("id", mediaEntry.getId());
         return update();
+    }
+
+    /**
+     * This method sets all media entry column values for SQL statement
+     *
+     * @param mediaEntry source of column values
+     */
+    private void setAllColumnValues(MediaEntry mediaEntry) {
+        setColumnValue("title", mediaEntry.getTitle());
+        setColumnValue("type", mediaEntry.getType());
+        setColumnValue("platform", mediaEntry.getPlatform());
+        setColumnValue("description", mediaEntry.getDescription());
+        setColumnValue("imageUrl", mediaEntry.getImageUrl());
+        setColumnValue("watched", mediaEntry.isWatched() ? 1 : 0);
+        setColumnValue("username", mediaEntry.getUsername());
     }
 
     /**
