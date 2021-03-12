@@ -14,7 +14,7 @@ public interface IUserAccountService {
      * @param userAccount UserAccount object representing a user to be created
      * @return newly created UserAccount object
      */
-    UserAccount createUserAccount(UserAccount userAccount) throws Exception;
+    String createUserAccount(UserAccount userAccount);
 
     /**
      * Retrieves a UserAccount object with the given username.
@@ -24,7 +24,7 @@ public interface IUserAccountService {
      * @param username String uniquely identifying a user
      * @return UserAccount object for the given username
      */
-    UserAccount fetchUserAccount(String username) throws Exception;
+    UserAccount fetchUserAccount(String username);
 
     /**
      * Indicates whether a token is valid for a given UserAccount
@@ -33,7 +33,7 @@ public interface IUserAccountService {
      * @param username String uniquely identifying a user
      * @return boolean indicating whether the token is valid for the given user
      */
-    boolean isTokenValid(String token, String username) throws Exception;
+    boolean isTokenValid(String token, String username);
 
     /**
      * Updates the token and lastLogin for a UserAccount
@@ -41,5 +41,5 @@ public interface IUserAccountService {
      * @param userAccount UserAccount object to create a new valid token for
      * @return new valid token for the given UserAccount
      */
-    String updateUserToken(UserAccount userAccount) throws Exception;
+    String updateUserToken(UserAccount userAccount);
 }

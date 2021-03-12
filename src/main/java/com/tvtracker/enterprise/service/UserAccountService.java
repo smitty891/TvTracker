@@ -12,7 +12,7 @@ import java.time.Instant;
 import java.util.Base64;
 
 @Service
-public class UserAccountServiceStub implements IUserAccountService {
+public class UserAccountService implements IUserAccountService {
 
     @Autowired
     IUserAccountDAO userAccountDAO;
@@ -29,7 +29,7 @@ public class UserAccountServiceStub implements IUserAccountService {
      * @return newly created UserAccount object
      */
     @Override
-    public UserAccount createUserAccount(UserAccount userAccount) throws Exception {
+    public String createUserAccount(UserAccount userAccount) {
         // return null if user name isn't unique;
         if(userAccountDAO.existsBy(userAccount.getUsername())){
             return null;
@@ -41,9 +41,12 @@ public class UserAccountServiceStub implements IUserAccountService {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         userAccount.setLastLogin(timestamp);
 
-        userAccountDAO.save(userAccount);
+        boolean success = userAccountDAO.save(userAccount);
 
-        return userAccount;
+        if(success)
+            return token;
+
+        return null;
     }
 
     /**
@@ -55,7 +58,7 @@ public class UserAccountServiceStub implements IUserAccountService {
      * @return UserAccount object for the given username
      */
     @Override
-    public UserAccount fetchUserAccount(String username) throws Exception {
+    public UserAccount fetchUserAccount(String username) {
         if(username == null)
             return null;
 
@@ -70,7 +73,7 @@ public class UserAccountServiceStub implements IUserAccountService {
      * @return boolean indicating whether the token is valid for the given user
      */
     @Override
-    public boolean isTokenValid(String token, String username) throws Exception {
+    public boolean isTokenValid(String token, String username) {
         UserAccount userAccount = fetchUserAccount(username);
 
         if(userAccount == null || userAccount.getToken() == null || userAccount.getLastLogin() == null)
@@ -94,7 +97,7 @@ public class UserAccountServiceStub implements IUserAccountService {
      * @return new valid token for the given UserAccount
      */
     @Override
-    public String updateUserToken(UserAccount userAccount) throws Exception {
+    public String updateUserToken(UserAccount userAccount) {
         if(userAccount == null)
             return null;
 
@@ -102,9 +105,13 @@ public class UserAccountServiceStub implements IUserAccountService {
         userAccount.setToken(token);
         userAccount.setLastLogin(new Timestamp(System.currentTimeMillis()));
 
-        userAccountDAO.update(userAccount);
+        boolean success = userAccountDAO.update(userAccount);
 
-        return token;
+        if(success) {
+            return token;
+        }
+
+        return null;
     }
 
     /**

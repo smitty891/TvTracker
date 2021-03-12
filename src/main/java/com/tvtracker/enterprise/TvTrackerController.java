@@ -38,7 +38,6 @@ public class TvTrackerController {
     @RequestMapping("/")
     public String index(){
         return "start";
-
     }
 
     /**
@@ -65,14 +64,13 @@ public class TvTrackerController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        try {
-            UserAccount newUserAccount = userAccountService.createUserAccount(userAccount);
-            String token = newUserAccount.getToken();
+        String token = userAccountService.createUserAccount(userAccount);
+
+        if(token != null) {
             return new ResponseEntity(token, headers, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity(headers, HttpStatus.CONFLICT);
         }
+
+        return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -91,18 +89,18 @@ public class TvTrackerController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        try {
-            UserAccount userAccount = userAccountService.fetchUserAccount(username);
+        UserAccount userAccount = userAccountService.fetchUserAccount(username);
 
-            if (userAccount != null && userAccount.getPassword().equals(password)) {
-                String token = userAccountService.updateUserToken(userAccount);
+        if (userAccount != null && userAccount.getPassword().equals(password)) {
+            String token = userAccountService.updateUserToken(userAccount);
+
+            if(token != null) {
                 return new ResponseEntity(token, headers, HttpStatus.OK);
-            } else {
-                return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
             }
-        } catch(Exception e) {
-            e.printStackTrace();
+
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+            return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
         }
     }
 

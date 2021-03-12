@@ -1,5 +1,3 @@
-window.sessionStorage.setItem("TvTrackerUsername", "testUser");
-
 function saveMediaEntry(mediaEntry) {
     const username = window.sessionStorage.getItem("TvTrackerUsername");
     const token = window.sessionStorage.getItem("TvTrackerToken");

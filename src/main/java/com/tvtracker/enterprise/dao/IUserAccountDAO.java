@@ -13,10 +13,9 @@ public interface IUserAccountDAO {
      * Method for creating a new UserAccount record in the database
      *
      * @param userAccount UserAccount object to be saved as a record in the database
-     * @return UserAccount object representation of new database record
-     * @throws Exception when database fails to save UserAccount
+     * @return boolean indicating a successful save
      */
-    UserAccount save(UserAccount userAccount) throws Exception;
+    boolean save(UserAccount userAccount);
 
 
     /**
@@ -25,7 +24,7 @@ public interface IUserAccountDAO {
      * @param username String uniquely identifying a UserAccount record
      * @return UserAccount representation of the corresponding UserAccount database record
      */
-    UserAccount fetch(String username) throws Exception;
+    UserAccount fetch(String username);
 
 
     /**
@@ -34,20 +33,22 @@ public interface IUserAccountDAO {
      * @param username String uniquely identifying a UserAccount record
      * @return boolean indicating whether a record exists for this username
      */
-    boolean existsBy(String username) throws Exception;
+    boolean existsBy(String username);
 
     /**
      * Method for deleting a distinct UserAccount record from the database
      *
      * @param username String uniquely identifying a UserAccount record
+     * @return boolean indicating a successful update
      */
-    void delete(String username) throws Exception;
+    boolean delete(String username);
 
 
     /**
      * Method for updating an existing UserAccount record in the database
      *
      * @param userAccount UserAccount object to be used for updating a database record
+     * @return boolean indicating a successful update
      */
-    void update(UserAccount userAccount) throws Exception;
+    boolean update(UserAccount userAccount);
 }

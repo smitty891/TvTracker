@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class MediaEntryServiceStub implements IMediaEntryService {
+public class MediaEntryService implements IMediaEntryService {
 
     @Autowired
     IMediaEntryDAO mediaEntryDAO;
@@ -21,13 +21,10 @@ public class MediaEntryServiceStub implements IMediaEntryService {
      */
     @Override
     public boolean createMediaEntry(MediaEntry mediaEntry) throws Exception {
-        if(mediaEntry == null){
+        if(mediaEntry == null)
             return false;
-        }
 
-        mediaEntryDAO.save(mediaEntry);
-
-        return true;
+        return mediaEntryDAO.save(mediaEntry);
     }
 
     /**
@@ -55,9 +52,7 @@ public class MediaEntryServiceStub implements IMediaEntryService {
      */
     @Override
     public boolean deleteMediaEntry(int entryId) throws Exception {
-        mediaEntryDAO.delete(entryId);
-
-        return true;
+        return mediaEntryDAO.delete(entryId);
     }
 
     /**

@@ -1,15 +1,13 @@
 package com.tvtracker.enterprise.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class MediaEntry {
     /**
      * MediaEntry's unique identifier
      */
-    private int entryId;
+    private int id;
     private String title;
     private String username;
     private String type;

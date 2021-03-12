@@ -1,12 +1,10 @@
 package com.tvtracker.enterprise.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.sql.Timestamp;
 
-@Getter
-@Setter
+@Data
 
 public class UserAccount {
     /**
