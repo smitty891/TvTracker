@@ -26,12 +26,12 @@ public class UserAccountDAO extends BaseDAO implements IUserAccountDAO {
      */
     @Override
     public boolean save(UserAccount userAccount) {
-        setInsertValue("username", userAccount.getUsername());
-        setInsertValue("password", userAccount.getPassword());
-        setInsertValue("email", userAccount.getEmail());
-        setInsertValue("birthDate", userAccount.getBirthDate());
-        setInsertValue("token", userAccount.getToken());
-        setInsertValue("lastLogin", userAccount.getLastLogin());
+        setColumnValue("username", userAccount.getUsername());
+        setColumnValue("password", userAccount.getPassword());
+        setColumnValue("email", userAccount.getEmail());
+        setColumnValue("birthDate", userAccount.getBirthDate());
+        setColumnValue("token", userAccount.getToken());
+        setColumnValue("lastLogin", userAccount.getLastLogin());
         return insert();
     }
 
@@ -84,8 +84,8 @@ public class UserAccountDAO extends BaseDAO implements IUserAccountDAO {
      */
     @Override
     public boolean update(UserAccount userAccount) {
-        updateColumn("token", userAccount.getToken());
-        updateColumn("lastLogin", userAccount.getLastLogin());
+        setColumnValue("token", userAccount.getToken());
+        setColumnValue("lastLogin", userAccount.getLastLogin());
         addWhere("username", userAccount.getUsername());
         return update();
     }

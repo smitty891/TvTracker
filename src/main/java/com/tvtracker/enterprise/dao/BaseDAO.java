@@ -19,10 +19,7 @@ public class BaseDAO {
 
     private StringBuffer whereCondition;
 
-    private HashMap<String, Object> updatedColumns;
-
-    private HashMap<String, Object> insertValues;
-
+    private HashMap<String, Object> columnValues;
 
     /**
      * Method for getting a connection to the database
@@ -140,16 +137,16 @@ public class BaseDAO {
 
 
     /**
-     * This method is for setting columns on the table to be updated
+     * This method is for creating column value pairs for a SQL statement
      *
      * @param column name of column to be updated
      * @param value value to be populated into the given column
      */
-    public void updateColumn(String column, Object value) {
-        if(updatedColumns == null)
-            updatedColumns = new HashMap<>();
+    public void setColumnValue(String column, Object value) {
+        if(columnValues == null)
+            columnValues = new HashMap<>();
 
-        updatedColumns.put(column, value);
+        columnValues.put(column, value);
     }
 
     /**
@@ -167,7 +164,7 @@ public class BaseDAO {
             sql.append("UPDATE ").append(tableName).append(" SET ");
 
             int index = 0;
-            for(Map.Entry entry: updatedColumns.entrySet()) {
+            for(Map.Entry entry: columnValues.entrySet()) {
                 index++;
                 String column = (String) entry.getKey();
                 Object value = entry.getValue();
@@ -180,7 +177,7 @@ public class BaseDAO {
                     sql.append(value);
                 }
 
-                if(index < updatedColumns.size()) {
+                if(index < columnValues.size()) {
                     sql.append(", ");
                 }
             }
@@ -200,7 +197,7 @@ public class BaseDAO {
             return false;
         } finally {
             whereCondition = null;
-            updatedColumns = null;
+            columnValues = null;
 
             try {
                 statement.close();
@@ -213,19 +210,6 @@ public class BaseDAO {
                 e.printStackTrace();
             }
         }
-    }
-
-    /**
-     * This method is for setting columns values for an insert statement
-     *
-     * @param column name of column
-     * @param value value to be populated into the given column
-     */
-    public void setInsertValue(String column, Object value) {
-        if(insertValues == null)
-            insertValues = new HashMap<>();
-
-        insertValues.put(column, value);
     }
 
     /**
@@ -242,17 +226,17 @@ public class BaseDAO {
             sql.append("INSERT INTO ").append(tableName).append("(");
 
             int colIndex = 0;
-            for(Map.Entry entry: insertValues.entrySet()) {
+            for(Map.Entry entry: columnValues.entrySet()) {
                 colIndex++;
                 sql.append(entry.getKey().toString());
 
-                if(colIndex < insertValues.entrySet().size()) {
+                if(colIndex < columnValues.entrySet().size()) {
                     sql.append(",");
                 }
             }
             sql.append(") VALUES (");
             int valIndex = 0;
-            for(Map.Entry entry: insertValues.entrySet()) {
+            for(Map.Entry entry: columnValues.entrySet()) {
                 valIndex++;
                 Object value = entry.getValue();
 
@@ -262,7 +246,7 @@ public class BaseDAO {
                     sql.append(value);
                 }
 
-                if(valIndex < insertValues.entrySet().size()) {
+                if(valIndex < columnValues.entrySet().size()) {
                     sql.append(",");
                 }
             }
@@ -276,7 +260,7 @@ public class BaseDAO {
             e.printStackTrace();
             return false;
         } finally {
-            insertValues = null;
+            columnValues = null;
 
             try {
                 statement.close();
