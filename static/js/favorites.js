@@ -1,5 +1,3 @@
-window.sessionStorage.setItem("TvTrackerUsername", "testUser");
-
 function updateMediaEntry(mediaEntry) {
     const username = window.sessionStorage.getItem("TvTrackerUsername");
     const token = window.sessionStorage.getItem("TvTrackerToken");
@@ -51,7 +49,7 @@ function editIconClickHandler(event) {
 
         // begin populating MediaEntry obj for updating
         let mediaEntry = {};
-        mediaEntry.entryId = infoElement.getAttribute("entryId");
+        mediaEntry.id = infoElement.getAttribute("entryId");
         mediaEntry.type = infoElement.getAttribute("mediaType");
         mediaEntry.title = unescape(infoElement.getAttribute("mediaTitle"));
         mediaEntry.imageUrl = infoElement.getAttribute("imageUrl");
@@ -134,10 +132,10 @@ function addDashboardPanels(mediaEntries) {
                         + '<i class="fa fa-check"></i>'
                     + '</div>'
                     + '<div class="rightSideIcons">'
-                        + '<i class="fa fa-pencil" mediaTitle=' + escape(item.title) + ' entryId=' + item.entryId + ' description='
+                        + '<i class="fa fa-pencil" mediaTitle=' + escape(item.title) + ' entryId=' + item.id + ' description='
                             + escape(item.description) + ' platform=' + item.platform + ' imageUrl=' + imgUrl +  ' watched='
                             + item.watched + ' mediaType=' + item.type + ' title="Edit" style="cursor:pointer;"></i>'
-                        + '<i class="fa fa-trash" entryId=' + item.entryId + ' title="Delete" style="padding-left:5px;cursor:pointer;"></i>'
+                        + '<i class="fa fa-trash" entryId=' + item.id + ' title="Delete" style="padding-left:5px;cursor:pointer;"></i>'
                     + '</div>'
                     + '<div class="favoritesTitle">' + item.title + '</div>'
                 + '</divwatchedCheckIcon>',

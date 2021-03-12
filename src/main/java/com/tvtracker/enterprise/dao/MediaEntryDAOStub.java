@@ -1,13 +1,21 @@
 package com.tvtracker.enterprise.dao;
 
 import com.tvtracker.enterprise.dto.MediaEntry;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-@Component
+/**
+ * Data Access Object for Media Entries
+ * <p>
+ *     This class allows access to MediaEntry records in our underlying database.
+ * </p>
+ */
+@Repository
+@Profile("test")
 public class MediaEntryDAOStub implements  IMediaEntryDAO {
     HashMap<Integer, MediaEntry> entriesByID = new HashMap<Integer, MediaEntry>();
     HashMap<String, HashMap<Integer, MediaEntry>> entriesByUsername = new HashMap<String, HashMap<Integer, MediaEntry>>();
@@ -16,22 +24,22 @@ public class MediaEntryDAOStub implements  IMediaEntryDAO {
      * Method for creating a new MediaEntry record in the database
      *
      * @param mediaEntry MediaEntry object to be saved as a record in the database
-     * @return MediaEntry object representation of new database record
-     * @throws Exception when database fails to save MediaEntry
+     * @return boolean indicating a successful save
      */
     @Override
-    public MediaEntry save(MediaEntry mediaEntry) throws Exception {
-        entriesByID.put(mediaEntry.getEntryId(), mediaEntry);
+    public boolean save(MediaEntry mediaEntry) {
+        mediaEntry.setId(entriesByID.size());
+        entriesByID.put(mediaEntry.getId(), mediaEntry);
 
         if(entriesByUsername.containsKey(mediaEntry.getUsername())){
-            entriesByUsername.get(mediaEntry.getUsername()).put(mediaEntry.getEntryId(), mediaEntry);
+            entriesByUsername.get(mediaEntry.getUsername()).put(mediaEntry.getId(), mediaEntry);
         } else {
             HashMap<Integer, MediaEntry> entries = new HashMap<Integer, MediaEntry>();
-            entries.put(mediaEntry.getEntryId(), mediaEntry);
+            entries.put(mediaEntry.getId(), mediaEntry);
             entriesByUsername.put(mediaEntry.getUsername(), entries);
         }
 
-        return mediaEntry;
+        return true;
     }
 
     /**
@@ -41,46 +49,56 @@ public class MediaEntryDAOStub implements  IMediaEntryDAO {
      * @return List of MediaEntry objects belonging to the given user
      */
     @Override
-    public List<MediaEntry> fetchByUsername(String username) throws Exception {
+    public List<MediaEntry> fetchByUsername(String username) {
         return new ArrayList(entriesByUsername.get(username).values());
     }
 
     /**
      * Method for fetching a distinct record in the database
      *
-     * @param entryId integer uniquely identifying a MediaEntry record
+     * @param id integer uniquely identifying a MediaEntry record
      * @return MediaEntry object representation of corresponding database record
      */
     @Override
-    public MediaEntry fetch(int entryId) throws Exception {
-        return entriesByID.get(entryId);
+    public MediaEntry fetch(int id) {
+        return entriesByID.get(id);
     }
 
     /**
      * Method for deleting a single MediaEntry record in the database
      *
-     * @param entryId integer uniquely identifying a MediaEntry record
+     * @param id integer uniquely identifying a MediaEntry record
+     * @return boolean indicating a successful delete
      */
     @Override
-    public void delete(int entryId) throws Exception {
-        MediaEntry entry = entriesByID.remove(entryId);
+    public boolean delete(int id) {
+        MediaEntry entry = entriesByID.remove(id);
+
         if(entry != null) {
-            entriesByUsername.get(entry.getUsername()).remove(entryId);
+            entriesByUsername.get(entry.getUsername()).remove(id);
+            return true;
         }
+
+        return false;
     }
 
     /**
      * Method for updating a MediaEntry record in the database
      *
      * @param mediaEntry MediaEntry object to be used for updating a database record
+     * @return boolean indicating a successful update
+     * @return
      */
     @Override
-    public void update(MediaEntry mediaEntry) throws Exception {
-        MediaEntry oldEntry = entriesByID.remove(mediaEntry.getEntryId());
+    public boolean update(MediaEntry mediaEntry) {
+        MediaEntry oldEntry = entriesByID.remove(mediaEntry.getId());
 
         if(oldEntry != null) {
-            entriesByID.put(mediaEntry.getEntryId(), mediaEntry);
-            entriesByUsername.get(oldEntry.getUsername()).put(mediaEntry.getEntryId(), mediaEntry);
+            entriesByID.put(mediaEntry.getId(), mediaEntry);
+            entriesByUsername.get(oldEntry.getUsername()).put(mediaEntry.getId(), mediaEntry);
+            return  true;
         }
+
+        return false;
     }
 }

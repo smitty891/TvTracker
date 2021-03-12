@@ -38,7 +38,6 @@ public class TvTrackerController {
     @RequestMapping("/")
     public String index(){
         return "start";
-
     }
 
     /**
@@ -65,14 +64,13 @@ public class TvTrackerController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        try {
-            UserAccount newUserAccount = userAccountService.createUserAccount(userAccount);
-            String token = newUserAccount.getToken();
+        String token = userAccountService.createUserAccount(userAccount);
+
+        if(token != null) {
             return new ResponseEntity(token, headers, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity(headers, HttpStatus.CONFLICT);
         }
+
+        return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -91,18 +89,18 @@ public class TvTrackerController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        try {
-            UserAccount userAccount = userAccountService.fetchUserAccount(username);
+        UserAccount userAccount = userAccountService.fetchUserAccount(username);
 
-            if (userAccount != null && userAccount.getPassword().equals(password)) {
-                String token = userAccountService.updateUserToken(userAccount);
+        if (userAccount != null && userAccount.getPassword().equals(password)) {
+            String token = userAccountService.updateUserToken(userAccount);
+
+            if(token != null) {
                 return new ResponseEntity(token, headers, HttpStatus.OK);
-            } else {
-                return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
             }
-        } catch(Exception e) {
-            e.printStackTrace();
+
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+            return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -120,18 +118,13 @@ public class TvTrackerController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        try {
-            // authenticate request
-            if (!userAccountService.isTokenValid(token, username)) {
-                return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
-            }
-
-            List<MediaEntry> mediaEntries = mediaEntryService.fetchMediaEntriesByUsername(username);
-            return new ResponseEntity(mediaEntries, headers, HttpStatus.OK);
-        } catch(Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        // authenticate request
+        if (!userAccountService.isTokenValid(token, username)) {
+            return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
         }
+
+        List<MediaEntry> mediaEntries = mediaEntryService.fetchMediaEntriesByUsername(username);
+        return new ResponseEntity(mediaEntries, headers, HttpStatus.OK);
     }
 
     /**
@@ -150,21 +143,16 @@ public class TvTrackerController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        try {
-            // authenticate request
-            if (!userAccountService.isTokenValid(token, username)) {
-                return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
-            }
+        // authenticate request
+        if (!userAccountService.isTokenValid(token, username)) {
+            return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
+        }
 
-            boolean success = mediaEntryService.updateMediaEntry(mediaEntry);
+        boolean success = mediaEntryService.updateMediaEntry(mediaEntry);
 
-            if (success) {
-                return new ResponseEntity(headers, HttpStatus.OK);
-            } else {
-                return new ResponseEntity(headers, HttpStatus.BAD_REQUEST);
-            }
-        } catch(Exception e) {
-            e.printStackTrace();
+        if (success) {
+            return new ResponseEntity(headers, HttpStatus.OK);
+        } else {
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -185,22 +173,17 @@ public class TvTrackerController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        try {
-            // authenticate request
-            if (!userAccountService.isTokenValid(token, username)) {
-                return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
-            }
+        // authenticate request
+        if (!userAccountService.isTokenValid(token, username)) {
+            return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
+        }
 
-            boolean success = mediaEntryService.deleteMediaEntry(entryId);
+        boolean success = mediaEntryService.deleteMediaEntry(entryId);
 
-            if (success) {
-                return new ResponseEntity(headers, HttpStatus.OK);
-            } else {
-                return new ResponseEntity(headers, HttpStatus.BAD_REQUEST);
-            }
-        } catch(Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        if (success) {
+            return new ResponseEntity(headers, HttpStatus.OK);
+        } else {
+            return new ResponseEntity(headers, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -220,22 +203,17 @@ public class TvTrackerController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        try {
-            // authenticate request
-            if (!userAccountService.isTokenValid(token, username)) {
-                return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
-            }
+        // authenticate request
+        if (!userAccountService.isTokenValid(token, username)) {
+            return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
+        }
 
-            boolean success = mediaEntryService.createMediaEntry(mediaEntry);
+        boolean success = mediaEntryService.createMediaEntry(mediaEntry);
 
-            if (success) {
-                return new ResponseEntity(headers, HttpStatus.OK);
-            } else {
-                return new ResponseEntity(headers, HttpStatus.BAD_REQUEST);
-            }
-        } catch(Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        if (success) {
+            return new ResponseEntity(headers, HttpStatus.OK);
+        } else {
+            return new ResponseEntity(headers, HttpStatus.BAD_REQUEST);
         }
     }
 }

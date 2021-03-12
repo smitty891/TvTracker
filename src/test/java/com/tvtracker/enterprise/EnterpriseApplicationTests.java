@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.Assert;
 
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.List;
 
 @SpringBootTest
@@ -18,49 +20,68 @@ class EnterpriseApplicationTests {
     @Autowired
     IMediaEntryService mediaEntryService;
 
-    final String TEST_USERNAME = "testUser";
+    final String TEST_USERNAME = generateUsername();
     final String TEST_USER_PASSWORD = "testPassword";
+
+    private static final SecureRandom secureRandom = new SecureRandom();
+    private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
 
     @Test
     void contextLoads() {
     }
 
-    @Test
-    void userCreatesUserAccount_ReturnsValidAuthenticationToken() throws Exception {
-        UserAccount userAccount = whenUserSendsUserAccountWithUniqueUsername();
-        returnsUserAccountWithValidToken(userAccount);
+    private static String generateUsername() {
+        byte[] randomBytes = new byte[10];
+        secureRandom.nextBytes(randomBytes);
+        String username = base64Encoder.encodeToString(randomBytes);
+        return username;
     }
 
-    private UserAccount whenUserSendsUserAccountWithUniqueUsername() throws Exception {
+    @Test
+    void userCreatesUserAccount_ReturnsValidAuthenticationToken() throws Exception {
+        returnsUserAccountWithValidToken(whenUserSendsUserAccountWithUniqueUsername());
+    }
+
+    private String whenUserSendsUserAccountWithUniqueUsername() throws Exception {
         UserAccount userAccount = new UserAccount();
         userAccount.setUsername(TEST_USERNAME);
         userAccount.setPassword(TEST_USER_PASSWORD);
         userAccount.setEmail("testUser@testSite.com");
 
-        UserAccount newUserAccount = userAccountService.createUserAccount(userAccount);
+        String token = userAccountService.createUserAccount(userAccount);
 
-        Assert.notNull(newUserAccount, "Creating user account returned null indicating username is not unique.");
+        Assert.notNull(token, "Creating user account returned null indicating username is not unique.");
 
-        return newUserAccount;
+        return token;
     }
 
-    private void returnsUserAccountWithValidToken(UserAccount userAccount) throws Exception {
-        Assert.notNull(userAccount, "Creating user account returned null indicating username is not unique.");
+    private void returnsUserAccountWithValidToken(String token) throws Exception {
+        Assert.notNull(token, "Creating user account returned null indicating username is not unique.");
 
-        boolean isValid = userAccountService.isTokenValid(userAccount.getToken(), userAccount.getUsername());
+        boolean isValid = userAccountService.isTokenValid(token, TEST_USERNAME);
 
         Assert.isTrue(isValid, "Token returned from user account creation was not valid.");
     }
 
     @Test
     void userCreatesMediaEntry_NewMediaEntryHasEntryId() throws Exception {
+        givenUserHasAccount();
         whenUserCreatesNewMediaEntry();
         newMediaEntryHasEntryId();
     }
 
+    private void givenUserHasAccount() {
+        UserAccount userAccount = new UserAccount();
+        userAccount.setUsername(TEST_USERNAME);
+        userAccount.setPassword(TEST_USER_PASSWORD);
+        userAccount.setEmail("testUser@testSite.com");
+
+        String token = userAccountService.createUserAccount(userAccount);
+    }
+
     private void whenUserCreatesNewMediaEntry() throws Exception {
         MediaEntry mediaEntry = new MediaEntry();
-        mediaEntry.setType("Movie");
+        mediaEntry.setType("movie");
         mediaEntry.setUsername(TEST_USERNAME);
         mediaEntry.setTitle("Easy Rider");
         mediaEntry.setDescription("Instant classic!");
@@ -74,11 +95,12 @@ class EnterpriseApplicationTests {
 
         boolean isCorrectEntry = mediaEntry.getDescription().equals("Instant classic!") && mediaEntry.getTitle().equals("Easy Rider");
         Assert.isTrue(isCorrectEntry, "Media Entry values do not match the created media entry.");
-        Assert.isTrue(mediaEntry.getEntryId() > -1, "Media Entry was not given a valid id.");
+        Assert.isTrue(mediaEntry.getId() > -1, "Media Entry was not given a valid id.");
     }
 
     @Test
     void userUpdatesMediaEntry_ReturnsSuccessBoolean() throws Exception {
+        givenUserHasAccount();
         givenUserHasCreatedAMediaEntry();
         int entryId = whenUserUpdatesMediaEntry();
         returnIndicationOfSuccess(entryId);
@@ -105,7 +127,7 @@ class EnterpriseApplicationTests {
         // update a media entry
         MediaEntry mediaEntry = mediaEntries.get(0);
         MediaEntry newMediaEntry = new MediaEntry();
-        newMediaEntry.setEntryId(mediaEntry.getEntryId());
+        newMediaEntry.setId(mediaEntry.getId());
         newMediaEntry.setUsername(mediaEntry.getUsername());
         newMediaEntry.setTitle(mediaEntry.getTitle());
         newMediaEntry.setType(mediaEntry.getType());
@@ -116,14 +138,14 @@ class EnterpriseApplicationTests {
         boolean success = mediaEntryService.updateMediaEntry(newMediaEntry);
         Assert.isTrue(success, "An error occurred while updating a media entry.");
 
-        return newMediaEntry.getEntryId();
+        return newMediaEntry.getId();
     }
 
     private void returnIndicationOfSuccess(int entryId) throws Exception {
         // check if media entry was successfully updated
         List<MediaEntry> mediaEntries = mediaEntryService.fetchMediaEntriesByUsername(TEST_USERNAME);
         MediaEntry foundEntry = null;
-        for(MediaEntry entry: mediaEntries) if (entry.getEntryId() == entryId) foundEntry = entry;
+        for(MediaEntry entry: mediaEntries) if (entry.getId() == entryId) foundEntry = entry;
 
         Assert.notNull(foundEntry, "The updated media entry was not found.");
         boolean updated = foundEntry.isWatched() && foundEntry.getPlatform().equals("Hulu") && foundEntry.getDescription().equals("Terrible");

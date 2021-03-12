@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class MediaEntryServiceStub implements IMediaEntryService {
+public class MediaEntryService implements IMediaEntryService {
 
     @Autowired
     IMediaEntryDAO mediaEntryDAO;
@@ -20,14 +20,11 @@ public class MediaEntryServiceStub implements IMediaEntryService {
      * @return boolean indicating success or failure
      */
     @Override
-    public boolean createMediaEntry(MediaEntry mediaEntry) throws Exception {
-        if(mediaEntry == null){
+    public boolean createMediaEntry(MediaEntry mediaEntry) {
+        if(mediaEntry == null)
             return false;
-        }
 
-        mediaEntryDAO.save(mediaEntry);
-
-        return true;
+        return mediaEntryDAO.save(mediaEntry);
     }
 
     /**
@@ -37,7 +34,7 @@ public class MediaEntryServiceStub implements IMediaEntryService {
      * @return boolean indicating success or failure
      */
     @Override
-    public boolean updateMediaEntry(MediaEntry mediaEntry) throws Exception {
+    public boolean updateMediaEntry(MediaEntry mediaEntry) {
         if(mediaEntry == null){
             return false;
         }
@@ -54,10 +51,8 @@ public class MediaEntryServiceStub implements IMediaEntryService {
      * @return boolean indicating success or failure
      */
     @Override
-    public boolean deleteMediaEntry(int entryId) throws Exception {
-        mediaEntryDAO.delete(entryId);
-
-        return true;
+    public boolean deleteMediaEntry(int entryId) {
+        return mediaEntryDAO.delete(entryId);
     }
 
     /**
@@ -67,7 +62,7 @@ public class MediaEntryServiceStub implements IMediaEntryService {
      * @return List of user's MediaEntry objects
      */
     @Override
-    public List<MediaEntry> fetchMediaEntriesByUsername(String username) throws Exception {
+    public List<MediaEntry> fetchMediaEntriesByUsername(String username) {
         return mediaEntryDAO.fetchByUsername(username);
     }
 }

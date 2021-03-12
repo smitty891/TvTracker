@@ -14,7 +14,7 @@ public interface IMediaEntryService {
      * @param mediaEntry MediaEntry object
      * @return boolean indicating success or failure
      */
-    boolean createMediaEntry(MediaEntry mediaEntry) throws Exception;
+    boolean createMediaEntry(MediaEntry mediaEntry);
 
     /**
      * Updates an existing MediaEntry database record.
@@ -22,7 +22,7 @@ public interface IMediaEntryService {
      * @param mediaEntry MediaEntry object
      * @return boolean indicating success or failure
      */
-    boolean updateMediaEntry(MediaEntry mediaEntry) throws Exception;
+    boolean updateMediaEntry(MediaEntry mediaEntry);
 
     /**
      * Removes a MediaEntry record from the database.
@@ -30,7 +30,7 @@ public interface IMediaEntryService {
      * @param entryId integer uniquely identifying a MediaEntry record
      * @return boolean indicating success or failure
      */
-    boolean deleteMediaEntry(int entryId) throws Exception;
+    boolean deleteMediaEntry(int entryId);
 
     /**
      * Retrieves all MediaEntry objects for a given user
@@ -38,5 +38,5 @@ public interface IMediaEntryService {
      * @param username String uniquely identifying a user
      * @return List of user's MediaEntry objects
      */
-    List<MediaEntry> fetchMediaEntriesByUsername(String username) throws Exception;
+    List<MediaEntry> fetchMediaEntriesByUsername(String username);
 }
