@@ -1,6 +1,7 @@
 package com.tvtracker.enterprise.dao;
 
 import com.tvtracker.enterprise.dto.UserAccount;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
@@ -9,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Repository
+@Profile("dev")
 public class UserAccountDAO extends BaseDAO implements IUserAccountDAO {
 
     public UserAccountDAO() {
