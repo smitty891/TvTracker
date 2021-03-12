@@ -20,7 +20,7 @@ public class MediaEntryService implements IMediaEntryService {
      * @return boolean indicating success or failure
      */
     @Override
-    public boolean createMediaEntry(MediaEntry mediaEntry) throws Exception {
+    public boolean createMediaEntry(MediaEntry mediaEntry) {
         if(mediaEntry == null)
             return false;
 
@@ -34,7 +34,7 @@ public class MediaEntryService implements IMediaEntryService {
      * @return boolean indicating success or failure
      */
     @Override
-    public boolean updateMediaEntry(MediaEntry mediaEntry) throws Exception {
+    public boolean updateMediaEntry(MediaEntry mediaEntry) {
         if(mediaEntry == null){
             return false;
         }
@@ -51,7 +51,7 @@ public class MediaEntryService implements IMediaEntryService {
      * @return boolean indicating success or failure
      */
     @Override
-    public boolean deleteMediaEntry(int entryId) throws Exception {
+    public boolean deleteMediaEntry(int entryId) {
         return mediaEntryDAO.delete(entryId);
     }
 
@@ -62,7 +62,7 @@ public class MediaEntryService implements IMediaEntryService {
      * @return List of user's MediaEntry objects
      */
     @Override
-    public List<MediaEntry> fetchMediaEntriesByUsername(String username) throws Exception {
+    public List<MediaEntry> fetchMediaEntriesByUsername(String username) {
         return mediaEntryDAO.fetchByUsername(username);
     }
 }
