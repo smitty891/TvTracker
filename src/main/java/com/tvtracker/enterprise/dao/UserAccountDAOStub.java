@@ -1,7 +1,8 @@
 package com.tvtracker.enterprise.dao;
 
 import com.tvtracker.enterprise.dto.UserAccount;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 
@@ -11,7 +12,8 @@ import java.util.HashMap;
  *     This class allows access to UserAccount records in our underlying database.
  * </p>
  */
-@Component
+@Repository
+@Profile("test")
 public class UserAccountDAOStub implements IUserAccountDAO {
     HashMap<String, UserAccount> userAccounts = new HashMap<String, UserAccount>();
 

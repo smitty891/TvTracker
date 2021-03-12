@@ -1,13 +1,15 @@
 package com.tvtracker.enterprise.dao;
 
 import com.tvtracker.enterprise.dto.MediaEntry;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-@Component
+@Repository
+@Profile("dev")
 public class MediaEntryDAO extends BaseDAO implements IMediaEntryDAO {
 
     public MediaEntryDAO() {
