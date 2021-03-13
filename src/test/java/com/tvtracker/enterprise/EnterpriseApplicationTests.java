@@ -35,8 +35,7 @@ class EnterpriseApplicationTests {
     private static String generateUsername() {
         byte[] randomBytes = new byte[10];
         secureRandom.nextBytes(randomBytes);
-        String username = base64Encoder.encodeToString(randomBytes);
-        return username;
+        return base64Encoder.encodeToString(randomBytes);
     }
 
     @Test
@@ -72,7 +71,7 @@ class EnterpriseApplicationTests {
         newMediaEntryHasEntryId();
     }
 
-    private void givenUserHasAccount() {
+    private void givenUserHasAccount() throws Exception {
         UserAccount userAccount = new UserAccount();
         userAccount.setUsername(TEST_USERNAME);
         userAccount.setPassword(TEST_USER_PASSWORD);

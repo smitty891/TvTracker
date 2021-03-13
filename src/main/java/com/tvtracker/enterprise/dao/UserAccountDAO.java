@@ -4,6 +4,8 @@ import com.tvtracker.enterprise.dto.UserAccount;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,10 +24,9 @@ public class UserAccountDAO extends BaseDAO implements IUserAccountDAO {
      *
      * @param userAccount UserAccount object to be saved as a record in the database
      * @return boolean indicating a successful save
-     * @throws Exception when database fails to save UserAccount
      */
     @Override
-    public boolean save(UserAccount userAccount) {
+    public boolean save(UserAccount userAccount) throws SQLException, IOException, ClassNotFoundException {
         setColumnValue("username", userAccount.getUsername());
         setColumnValue("password", userAccount.getPassword());
         setColumnValue("email", userAccount.getEmail());
@@ -42,7 +43,7 @@ public class UserAccountDAO extends BaseDAO implements IUserAccountDAO {
      * @return UserAccount representation of the corresponding UserAccount database record
      */
     @Override
-    public UserAccount fetch(String username) {
+    public UserAccount fetch(String username) throws SQLException, IOException, ClassNotFoundException {
         addWhere("username", username);
         List<UserAccount> users = parse(select());
 
@@ -59,7 +60,7 @@ public class UserAccountDAO extends BaseDAO implements IUserAccountDAO {
      * @return boolean indicating whether a record exists for this username
      */
     @Override
-    public boolean existsBy(String username) {
+    public boolean existsBy(String username) throws SQLException, IOException, ClassNotFoundException {
         addWhere("username", username);
         return !select().isEmpty();
     }
@@ -71,7 +72,7 @@ public class UserAccountDAO extends BaseDAO implements IUserAccountDAO {
      * @return boolean indicating a successful delete
      */
     @Override
-    public boolean delete(String username) {
+    public boolean delete(String username) throws SQLException, IOException, ClassNotFoundException {
         addWhere("username", username);
         return delete();
     }
@@ -83,7 +84,7 @@ public class UserAccountDAO extends BaseDAO implements IUserAccountDAO {
      * @return boolean indicating a successful update
      */
     @Override
-    public boolean update(UserAccount userAccount) {
+    public boolean update(UserAccount userAccount) throws SQLException, IOException, ClassNotFoundException {
         setColumnValue("token", userAccount.getToken());
         setColumnValue("lastLogin", userAccount.getLastLogin());
         addWhere("username", userAccount.getUsername());

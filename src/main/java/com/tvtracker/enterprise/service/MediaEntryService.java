@@ -5,6 +5,8 @@ import com.tvtracker.enterprise.dto.MediaEntry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 @Service
@@ -20,7 +22,7 @@ public class MediaEntryService implements IMediaEntryService {
      * @return boolean indicating success or failure
      */
     @Override
-    public boolean createMediaEntry(MediaEntry mediaEntry) {
+    public boolean createMediaEntry(MediaEntry mediaEntry) throws SQLException, IOException, ClassNotFoundException {
         if(mediaEntry == null)
             return false;
 
@@ -34,7 +36,7 @@ public class MediaEntryService implements IMediaEntryService {
      * @return boolean indicating success or failure
      */
     @Override
-    public boolean updateMediaEntry(MediaEntry mediaEntry) {
+    public boolean updateMediaEntry(MediaEntry mediaEntry) throws SQLException, IOException, ClassNotFoundException {
         if(mediaEntry == null){
             return false;
         }
@@ -51,7 +53,7 @@ public class MediaEntryService implements IMediaEntryService {
      * @return boolean indicating success or failure
      */
     @Override
-    public boolean deleteMediaEntry(int entryId) {
+    public boolean deleteMediaEntry(int entryId) throws SQLException, IOException, ClassNotFoundException {
         return mediaEntryDAO.delete(entryId);
     }
 
@@ -62,7 +64,7 @@ public class MediaEntryService implements IMediaEntryService {
      * @return List of user's MediaEntry objects
      */
     @Override
-    public List<MediaEntry> fetchMediaEntriesByUsername(String username) {
+    public List<MediaEntry> fetchMediaEntriesByUsername(String username) throws SQLException, IOException, ClassNotFoundException {
         return mediaEntryDAO.fetchByUsername(username);
     }
 }
