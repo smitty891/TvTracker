@@ -4,6 +4,8 @@ import com.tvtracker.enterprise.dto.MediaEntry;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +24,7 @@ public class MediaEntryDAO extends BaseDAO implements IMediaEntryDAO {
      * @return MediaEntry object representation of new database record
      */
     @Override
-    public boolean save(MediaEntry mediaEntry) {
+    public boolean save(MediaEntry mediaEntry) throws SQLException, IOException, ClassNotFoundException {
         setAllColumnValues(mediaEntry);
         return insert();
     }
@@ -34,7 +36,7 @@ public class MediaEntryDAO extends BaseDAO implements IMediaEntryDAO {
      * @return List of MediaEntry objects belonging to the given user
      */
     @Override
-    public List<MediaEntry> fetchByUsername(String username) {
+    public List<MediaEntry> fetchByUsername(String username) throws SQLException, IOException, ClassNotFoundException {
         addWhere("username", username);
         return parse(select());
     }
@@ -46,7 +48,7 @@ public class MediaEntryDAO extends BaseDAO implements IMediaEntryDAO {
      * @return MediaEntry object representation of corresponding database record
      */
     @Override
-    public MediaEntry fetch(int id) {
+    public MediaEntry fetch(int id) throws SQLException, IOException, ClassNotFoundException {
         addWhere("id", id);
         List<MediaEntry> entries = parse(select());
 
@@ -63,7 +65,7 @@ public class MediaEntryDAO extends BaseDAO implements IMediaEntryDAO {
      * @return boolean indicating a successfully delete
      */
     @Override
-    public boolean delete(int id) {
+    public boolean delete(int id) throws SQLException, IOException, ClassNotFoundException {
         addWhere("id", id);
         return delete();
     }
@@ -75,7 +77,7 @@ public class MediaEntryDAO extends BaseDAO implements IMediaEntryDAO {
      * @return boolean indicating a successful update
      */
     @Override
-    public boolean update(MediaEntry mediaEntry) {
+    public boolean update(MediaEntry mediaEntry) throws SQLException, IOException, ClassNotFoundException {
         setAllColumnValues(mediaEntry);
         addWhere("id", mediaEntry.getId());
         return update();

@@ -5,7 +5,9 @@ import com.tvtracker.enterprise.dto.UserAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.security.SecureRandom;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
@@ -29,12 +31,7 @@ public class UserAccountService implements IUserAccountService {
      * @return newly created UserAccount object
      */
     @Override
-    public String createUserAccount(UserAccount userAccount) {
-        // return null if user name isn't unique;
-        if(userAccountDAO.existsBy(userAccount.getUsername())){
-            return null;
-        }
-
+    public String createUserAccount(UserAccount userAccount) throws SQLException, IOException, ClassNotFoundException {
         String token = generateNewToken();
         userAccount.setToken(token);
 
@@ -50,6 +47,16 @@ public class UserAccountService implements IUserAccountService {
     }
 
     /**
+     * Indicates whether a user with the given username already exists.
+     *
+     * @param userAccount UserAccount to compare against database records
+     * @return boolean indicating whether a user with this username exists
+     */
+    public boolean userAccountExists(UserAccount userAccount) throws SQLException, IOException, ClassNotFoundException {
+        return userAccountDAO.existsBy(userAccount.getUsername());
+    }
+
+    /**
      * Retrieves a UserAccount object with the given username.
      *
      * Returns null if a user account with the given username could not be found.
@@ -58,7 +65,7 @@ public class UserAccountService implements IUserAccountService {
      * @return UserAccount object for the given username
      */
     @Override
-    public UserAccount fetchUserAccount(String username) {
+    public UserAccount fetchUserAccount(String username) throws SQLException, IOException, ClassNotFoundException {
         if(username == null)
             return null;
 
@@ -73,7 +80,7 @@ public class UserAccountService implements IUserAccountService {
      * @return boolean indicating whether the token is valid for the given user
      */
     @Override
-    public boolean isTokenValid(String token, String username) {
+    public boolean isTokenValid(String token, String username) throws SQLException, IOException, ClassNotFoundException {
         UserAccount userAccount = fetchUserAccount(username);
 
         if(userAccount == null || userAccount.getToken() == null || userAccount.getLastLogin() == null)
@@ -97,7 +104,7 @@ public class UserAccountService implements IUserAccountService {
      * @return new valid token for the given UserAccount
      */
     @Override
-    public String updateUserToken(UserAccount userAccount) {
+    public String updateUserToken(UserAccount userAccount) throws SQLException, IOException, ClassNotFoundException {
         if(userAccount == null)
             return null;
 

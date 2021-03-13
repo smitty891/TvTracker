@@ -55,6 +55,7 @@ public class TvTrackerController {
      * Returns one of the following status codes:
      * 201: successfully created a user account.
      * 409: unable to create a user account, because username already exists in the database.
+     * 500: SQL Database error occurred.
      *
      * @param userAccount a JSON representation of a UserAccount object
      * @return a valid user token for session authentication
@@ -63,22 +64,34 @@ public class TvTrackerController {
     public ResponseEntity signUpUser(@RequestBody UserAccount userAccount) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        String token;
 
-        String token = userAccountService.createUserAccount(userAccount);
+        try {
+            if (!userAccountService.userAccountExists(userAccount)) {
+                return new ResponseEntity(headers, HttpStatus.CONFLICT);
+            }
 
-        if(token != null) {
-            return new ResponseEntity(token, headers, HttpStatus.OK);
+            token = userAccountService.createUserAccount(userAccount);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        if (token == null) {
+            return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity(token, headers, HttpStatus.CREATED);
     }
 
     /**
      * Authenticate user and return newly generated session token
      *
      * Returns one of the following status codes:
-     * 201: successfully authenticated user.
+     * 200: successfully authenticated user.
      * 401: invalid username password combination.
+     * 500: SQL Database error occurred.
      *
      * @param username String uniquely identifying a user
      * @param password String that authenticates a user
@@ -89,26 +102,35 @@ public class TvTrackerController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        UserAccount userAccount = userAccountService.fetchUserAccount(username);
+        UserAccount userAccount;
+        String token;
 
-        if (userAccount != null && userAccount.getPassword().equals(password)) {
-            String token = userAccountService.updateUserToken(userAccount);
+        try {
+            userAccount = userAccountService.fetchUserAccount(username);
 
-            if(token != null) {
-                return new ResponseEntity(token, headers, HttpStatus.OK);
+            if (userAccount != null && userAccount.getPassword().equals(password)) {
+                token = userAccountService.updateUserToken(userAccount);
+            } else {
+                return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
             }
-
+        } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
-        } else {
-            return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
         }
+
+        if (token == null) {
+            return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity(token, headers, HttpStatus.OK);
     }
 
     /**
      * Returns all media entries tied to the given username
      *
-     * 201: successfully updated media entry.
+     * 200: successfully returned media entry records.
      * 401: authentication token is invalid.
+     * 500: SQL Database error occurred.
      *
      * @param username String uniquely identifying a user
      * @return List user's media entries
@@ -117,13 +139,25 @@ public class TvTrackerController {
     public ResponseEntity getUsersMediaEntries(@RequestParam(value="username", required=true) String username, @RequestParam(value="token", required=true) String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        List<MediaEntry> mediaEntries;
 
-        // authenticate request
-        if (!userAccountService.isTokenValid(token, username)) {
-            return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
+        try {
+            // authenticate request
+            if (!userAccountService.isTokenValid(token, username)) {
+                return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
+            }
+
+            mediaEntries = mediaEntryService.fetchMediaEntriesByUsername(username);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        List<MediaEntry> mediaEntries = mediaEntryService.fetchMediaEntriesByUsername(username);
+        if (mediaEntries == null) {
+            return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
         return new ResponseEntity(mediaEntries, headers, HttpStatus.OK);
     }
 
@@ -131,9 +165,10 @@ public class TvTrackerController {
      * Update an existing media entry record
      *
      * Returns one of the following status codes:
-     * 201: successfully updated media entry.
+     * 200: successfully updated media entry.
      * 400: failed to update media entry.
      * 401: authentication token is invalid.
+     * 500: SQL Database error occurred.
      *
      * @param mediaEntry a JSON representation of a MediaEntry object
      * @return HttpStatus
@@ -144,26 +179,29 @@ public class TvTrackerController {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         // authenticate request
-        if (!userAccountService.isTokenValid(token, username)) {
-            return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
-        }
+        try {
+            if (!userAccountService.isTokenValid(token, username)) {
+                return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
+            }
 
-        boolean success = mediaEntryService.updateMediaEntry(mediaEntry);
-
-        if (success) {
-            return new ResponseEntity(headers, HttpStatus.OK);
-        } else {
+            if (!mediaEntryService.updateMediaEntry(mediaEntry)) {
+                return new ResponseEntity(headers, HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        return new ResponseEntity(headers, HttpStatus.OK);
     }
 
     /**
      * Delete media entry record
      *
      * Returns one of the following status codes:
-     * 201: successfully deleted media entry.
+     * 200: successfully deleted media entry.
      * 400: failed to delete media entry.
      * 401: authentication token is invalid.
+     * 500: SQL Database error occurred.
      *
      * @param entryId integer uniquely identifying the media entry record
      * @return HttpStatus
@@ -174,17 +212,20 @@ public class TvTrackerController {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         // authenticate request
-        if (!userAccountService.isTokenValid(token, username)) {
-            return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
+        try {
+            if (!userAccountService.isTokenValid(token, username)) {
+                return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
+            }
+
+            if (!mediaEntryService.deleteMediaEntry(entryId)) {
+                return new ResponseEntity(headers, HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        boolean success = mediaEntryService.deleteMediaEntry(entryId);
-
-        if (success) {
-            return new ResponseEntity(headers, HttpStatus.OK);
-        } else {
-            return new ResponseEntity(headers, HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity(headers, HttpStatus.OK);
     }
 
     /**
@@ -194,6 +235,7 @@ public class TvTrackerController {
      * 201: successfully created media entry.
      * 400: failed to create media entry.
      * 401: authentication token is invalid.
+     * 500: SQL Database error occurred.
      *
      * @param mediaEntry a JSON representation of a MediaEntry object
      * @return HttpStatus
@@ -204,16 +246,19 @@ public class TvTrackerController {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         // authenticate request
-        if (!userAccountService.isTokenValid(token, username)) {
-            return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
+        try {
+            if (!userAccountService.isTokenValid(token, username)) {
+                return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
+            }
+
+            if (!mediaEntryService.createMediaEntry(mediaEntry)) {
+                return new ResponseEntity(headers, HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        boolean success = mediaEntryService.createMediaEntry(mediaEntry);
-
-        if (success) {
-            return new ResponseEntity(headers, HttpStatus.OK);
-        } else {
-            return new ResponseEntity(headers, HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 }

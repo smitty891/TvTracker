@@ -2,6 +2,9 @@ package com.tvtracker.enterprise.service;
 
 import com.tvtracker.enterprise.dto.UserAccount;
 
+import java.io.IOException;
+import java.sql.SQLException;
+
 /**
  * Implementations of IUserAccountService contain all the methods necessary for TvTracker's UserAccount functionality.
  */
@@ -14,7 +17,15 @@ public interface IUserAccountService {
      * @param userAccount UserAccount object representing a user to be created
      * @return newly created UserAccount object
      */
-    String createUserAccount(UserAccount userAccount);
+    String createUserAccount(UserAccount userAccount) throws SQLException, IOException, ClassNotFoundException;
+
+    /**
+     * Indicates whether a user with the given username already exists.
+     *
+     * @param userAccount UserAccount to compare against database records
+     * @return boolean indicating whether a user with this username exists
+     */
+    boolean userAccountExists(UserAccount userAccount) throws SQLException, IOException, ClassNotFoundException;
 
     /**
      * Retrieves a UserAccount object with the given username.
@@ -24,7 +35,7 @@ public interface IUserAccountService {
      * @param username String uniquely identifying a user
      * @return UserAccount object for the given username
      */
-    UserAccount fetchUserAccount(String username);
+    UserAccount fetchUserAccount(String username) throws SQLException, IOException, ClassNotFoundException;
 
     /**
      * Indicates whether a token is valid for a given UserAccount
@@ -33,7 +44,7 @@ public interface IUserAccountService {
      * @param username String uniquely identifying a user
      * @return boolean indicating whether the token is valid for the given user
      */
-    boolean isTokenValid(String token, String username);
+    boolean isTokenValid(String token, String username) throws SQLException, IOException, ClassNotFoundException;
 
     /**
      * Updates the token and lastLogin for a UserAccount
@@ -41,5 +52,5 @@ public interface IUserAccountService {
      * @param userAccount UserAccount object to create a new valid token for
      * @return new valid token for the given UserAccount
      */
-    String updateUserToken(UserAccount userAccount);
+    String updateUserToken(UserAccount userAccount) throws SQLException, IOException, ClassNotFoundException;
 }

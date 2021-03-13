@@ -2,6 +2,9 @@ package com.tvtracker.enterprise.dao;
 
 import com.tvtracker.enterprise.dto.UserAccount;
 
+import java.io.IOException;
+import java.sql.SQLException;
+
 /**
  * Data Access Object for UserAccounts
  * <p>
@@ -15,7 +18,7 @@ public interface IUserAccountDAO {
      * @param userAccount UserAccount object to be saved as a record in the database
      * @return boolean indicating a successful save
      */
-    boolean save(UserAccount userAccount);
+    boolean save(UserAccount userAccount) throws SQLException, IOException, ClassNotFoundException;
 
 
     /**
@@ -24,7 +27,7 @@ public interface IUserAccountDAO {
      * @param username String uniquely identifying a UserAccount record
      * @return UserAccount representation of the corresponding UserAccount database record
      */
-    UserAccount fetch(String username);
+    UserAccount fetch(String username) throws SQLException, IOException, ClassNotFoundException;
 
 
     /**
@@ -33,7 +36,7 @@ public interface IUserAccountDAO {
      * @param username String uniquely identifying a UserAccount record
      * @return boolean indicating whether a record exists for this username
      */
-    boolean existsBy(String username);
+    boolean existsBy(String username) throws SQLException, IOException, ClassNotFoundException;
 
     /**
      * Method for deleting a distinct UserAccount record from the database
@@ -41,7 +44,7 @@ public interface IUserAccountDAO {
      * @param username String uniquely identifying a UserAccount record
      * @return boolean indicating a successful update
      */
-    boolean delete(String username);
+    boolean delete(String username) throws SQLException, IOException, ClassNotFoundException;
 
 
     /**
@@ -50,5 +53,5 @@ public interface IUserAccountDAO {
      * @param userAccount UserAccount object to be used for updating a database record
      * @return boolean indicating a successful update
      */
-    boolean update(UserAccount userAccount);
+    boolean update(UserAccount userAccount) throws SQLException, IOException, ClassNotFoundException;
 }

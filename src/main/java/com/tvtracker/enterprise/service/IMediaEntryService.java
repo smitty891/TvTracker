@@ -2,6 +2,8 @@ package com.tvtracker.enterprise.service;
 
 import com.tvtracker.enterprise.dto.MediaEntry;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -14,7 +16,7 @@ public interface IMediaEntryService {
      * @param mediaEntry MediaEntry object
      * @return boolean indicating success or failure
      */
-    boolean createMediaEntry(MediaEntry mediaEntry);
+    boolean createMediaEntry(MediaEntry mediaEntry) throws SQLException, IOException, ClassNotFoundException;
 
     /**
      * Updates an existing MediaEntry database record.
@@ -22,7 +24,7 @@ public interface IMediaEntryService {
      * @param mediaEntry MediaEntry object
      * @return boolean indicating success or failure
      */
-    boolean updateMediaEntry(MediaEntry mediaEntry);
+    boolean updateMediaEntry(MediaEntry mediaEntry) throws SQLException, IOException, ClassNotFoundException;
 
     /**
      * Removes a MediaEntry record from the database.
@@ -30,7 +32,7 @@ public interface IMediaEntryService {
      * @param entryId integer uniquely identifying a MediaEntry record
      * @return boolean indicating success or failure
      */
-    boolean deleteMediaEntry(int entryId);
+    boolean deleteMediaEntry(int entryId) throws SQLException, IOException, ClassNotFoundException;
 
     /**
      * Retrieves all MediaEntry objects for a given user
@@ -38,5 +40,5 @@ public interface IMediaEntryService {
      * @param username String uniquely identifying a user
      * @return List of user's MediaEntry objects
      */
-    List<MediaEntry> fetchMediaEntriesByUsername(String username);
+    List<MediaEntry> fetchMediaEntriesByUsername(String username) throws SQLException, IOException, ClassNotFoundException;
 }

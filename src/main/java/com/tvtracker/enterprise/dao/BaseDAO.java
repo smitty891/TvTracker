@@ -25,9 +25,6 @@ public class BaseDAO {
      * Method for getting a connection to the database
      *
      * @return Connection to database
-     * @throws ClassNotFoundException
-     * @throws SQLException
-     * @throws IOException
      */
     private static Connection getConnection() throws ClassNotFoundException, SQLException, IOException {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
@@ -94,45 +91,25 @@ public class BaseDAO {
      *
      * @return ArrayList containing key value pairs
      */
-    public ArrayList<HashMap<String, Object>> select() {
-        ArrayList<HashMap<String, Object>> results = new ArrayList<HashMap<String, Object>>();
+    public ArrayList<HashMap<String, Object>> select() throws SQLException, IOException, ClassNotFoundException {
+        StringBuffer sql = new StringBuffer();
 
-        Connection conn = null;
-        Statement statement = null;
-
-        try {
-            StringBuffer sql = new StringBuffer();
-
-            sql.append("SELECT * FROM ").append(tableName);
-            if(whereCondition != null) {
-                sql.append(whereCondition);
-            }
-
-            conn = getConnection();
-            statement = conn.createStatement();
-            statement.execute(sql.toString());
-
-            results = getResultList(statement.getResultSet());
-
-            return results;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ArrayList<HashMap<String, Object>>();
-        } finally {
+        sql.append("SELECT * FROM ").append(tableName);
+        if (whereCondition != null) {
+            sql.append(whereCondition);
             whereCondition = null;
-
-            try {
-                statement.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
+
+        Connection conn = getConnection();
+        Statement statement = conn.createStatement();
+        statement.execute(sql.toString());
+
+        ArrayList<HashMap<String, Object>> results = getResultList(statement.getResultSet());
+
+        statement.close();
+        conn.close();
+
+        return results;
     }
 
 
@@ -154,62 +131,46 @@ public class BaseDAO {
      *
      * @return boolean indicating whether update was successful
      */
-    public boolean update() {
-        Connection conn = null;
-        Statement statement = null;
+    public boolean update() throws SQLException, IOException, ClassNotFoundException {
+        StringBuffer sql = new StringBuffer();
 
-        try {
-            StringBuffer sql = new StringBuffer();
+        sql.append("UPDATE ").append(tableName).append(" SET ");
 
-            sql.append("UPDATE ").append(tableName).append(" SET ");
+        int index = 0;
+        for(Map.Entry entry: columnValues.entrySet()) {
+            index++;
+            String column = (String) entry.getKey();
+            Object value = entry.getValue();
 
-            int index = 0;
-            for(Map.Entry entry: columnValues.entrySet()) {
-                index++;
-                String column = (String) entry.getKey();
-                Object value = entry.getValue();
+            sql.append(column).append(" = ");
 
-                sql.append(column).append(" = ");
-
-                if(value instanceof String || value instanceof Timestamp) {
-                    sql.append("'").append(value.toString()).append("'");
-                } else {
-                    sql.append(value);
-                }
-
-                if(index < columnValues.size()) {
-                    sql.append(", ");
-                }
+            if(value instanceof String || value instanceof Timestamp) {
+                sql.append("'").append(value.toString()).append("'");
+            } else {
+                sql.append(value);
             }
 
-            if(whereCondition != null) {
-                sql.append(whereCondition);
-            }
-
-            conn = getConnection();
-            statement = conn.createStatement();
-            int numOfUpdates = statement.executeUpdate(sql.toString());
-
-            return numOfUpdates > 0;
-
-        } catch(Exception e) {
-            e.printStackTrace();
-            return false;
-        } finally {
-            whereCondition = null;
-            columnValues = null;
-
-            try {
-                statement.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            if(index < columnValues.size()) {
+                sql.append(", ");
             }
         }
+
+        columnValues = null;
+
+        if(whereCondition != null) {
+            sql.append(whereCondition);
+            whereCondition = null;
+        }
+
+        Connection conn = getConnection();
+        Statement statement = conn.createStatement();
+
+        int numOfUpdates = statement.executeUpdate(sql.toString());
+
+        statement.close();
+        conn.close();
+
+        return numOfUpdates > 0;
     }
 
     /**
@@ -217,62 +178,48 @@ public class BaseDAO {
      *
      * @return boolean indicating whether insert was successful
      */
-    public boolean insert() {
-        Connection conn = null;
-        Statement statement = null;
+    public boolean insert() throws SQLException, IOException, ClassNotFoundException {
+        StringBuffer sql = new StringBuffer();
+        sql.append("INSERT INTO ").append(tableName).append("(");
 
-        try {
-            StringBuffer sql = new StringBuffer();
-            sql.append("INSERT INTO ").append(tableName).append("(");
+        int colIndex = 0;
+        for(Map.Entry entry: columnValues.entrySet()) {
+            colIndex++;
+            sql.append(entry.getKey().toString());
 
-            int colIndex = 0;
-            for(Map.Entry entry: columnValues.entrySet()) {
-                colIndex++;
-                sql.append(entry.getKey().toString());
-
-                if(colIndex < columnValues.entrySet().size()) {
-                    sql.append(",");
-                }
-            }
-            sql.append(") VALUES (");
-            int valIndex = 0;
-            for(Map.Entry entry: columnValues.entrySet()) {
-                valIndex++;
-                Object value = entry.getValue();
-
-                if(value instanceof String || value instanceof Timestamp) {
-                    sql.append("'").append(value.toString()).append("'");
-                } else {
-                    sql.append(value);
-                }
-
-                if(valIndex < columnValues.entrySet().size()) {
-                    sql.append(",");
-                }
-            }
-            sql.append(")");
-
-            conn = getConnection();
-            statement = conn.createStatement();
-            return statement.executeUpdate(sql.toString()) > 0;
-
-        } catch(Exception e) {
-            e.printStackTrace();
-            return false;
-        } finally {
-            columnValues = null;
-
-            try {
-                statement.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            if(colIndex < columnValues.entrySet().size()) {
+                sql.append(",");
             }
         }
+        sql.append(") VALUES (");
+        int valIndex = 0;
+        for(Map.Entry entry: columnValues.entrySet()) {
+            valIndex++;
+            Object value = entry.getValue();
+
+            if(value instanceof String || value instanceof Timestamp) {
+                sql.append("'").append(value.toString()).append("'");
+            } else {
+                sql.append(value);
+            }
+
+            if(valIndex < columnValues.entrySet().size()) {
+                sql.append(",");
+            }
+        }
+        sql.append(")");
+
+        columnValues = null;
+
+        Connection conn = getConnection();
+        Statement statement = conn.createStatement();
+
+        int numOfInserts = statement.executeUpdate(sql.toString());
+
+        statement.close();
+        conn.close();
+
+        return numOfInserts > 0;
     }
 
     /**
@@ -280,42 +227,26 @@ public class BaseDAO {
      *
      * @return boolean indicating whether delete was successful
      */
-    public boolean delete() {
-        Connection conn = null;
-        Statement statement = null;
+    public boolean delete() throws SQLException, IOException, ClassNotFoundException {
+        StringBuffer sql = new StringBuffer();
+        sql.append("DELETE FROM ").append(tableName);
 
-        try{
-            StringBuffer sql = new StringBuffer();
-            sql.append("DELETE FROM ").append(tableName);
-
-            if(whereCondition != null) {
-                sql.append(whereCondition);
-            } else {
-                return false;
-            }
-
-            conn = getConnection();
-            statement = conn.createStatement();
-
-            return statement.executeUpdate(sql.toString()) > 0;
-
-        } catch(Exception e) {
-            e.printStackTrace();
-            return false;
-        } finally {
+        if(whereCondition != null) {
+            sql.append(whereCondition);
             whereCondition = null;
-
-            try {
-                statement.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        } else {
+            return false;
         }
+
+        Connection conn = getConnection();
+        Statement statement = conn.createStatement();
+
+        int numOfDeletes = statement.executeUpdate(sql.toString());
+
+        statement.close();
+        conn.close();
+
+        return numOfDeletes > 0;
     }
 
 
@@ -325,11 +256,10 @@ public class BaseDAO {
      * @param resultSet returned from the execution of a SQL statement
      * @return ArrayList of key value pairs
      */
-    private ArrayList<HashMap<String, Object>> getResultList(ResultSet resultSet) {
+    private ArrayList<HashMap<String, Object>> getResultList(ResultSet resultSet) throws SQLException {
         ArrayList<HashMap<String, Object>> results = new ArrayList<HashMap<String, Object>>();
         HashMap<String, Object> valuesMap;
 
-        try {
             ResultSetMetaData metaData = resultSet.getMetaData();
 
             while (resultSet.next()) {
@@ -347,10 +277,7 @@ public class BaseDAO {
                 }
                 results.add(valuesMap);
             }
-        } catch(Exception e) {
-            e.printStackTrace();
-        } finally {
+
             return results;
-        }
     }
 }
