@@ -67,7 +67,7 @@ public class TvTrackerController {
         String token;
 
         try {
-            if (!userAccountService.userAccountExists(userAccount)) {
+            if (userAccountService.userAccountExists(userAccount)) {
                 return new ResponseEntity(headers, HttpStatus.CONFLICT);
             }
 
