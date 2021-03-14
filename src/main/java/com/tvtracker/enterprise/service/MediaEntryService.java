@@ -3,6 +3,8 @@ package com.tvtracker.enterprise.service;
 import com.tvtracker.enterprise.dao.IMediaEntryDAO;
 import com.tvtracker.enterprise.dto.MediaEntry;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -53,6 +55,7 @@ public class MediaEntryService implements IMediaEntryService {
      * @return boolean indicating success or failure
      */
     @Override
+    @CacheEvict(value="mediaEntry", key="entryId")
     public boolean deleteMediaEntry(int entryId) throws SQLException, IOException, ClassNotFoundException {
         return mediaEntryDAO.delete(entryId);
     }
@@ -64,6 +67,7 @@ public class MediaEntryService implements IMediaEntryService {
      * @return List of user's MediaEntry objects
      */
     @Override
+    @Cacheable(value="mediaEntries", key="username")
     public List<MediaEntry> fetchMediaEntriesByUsername(String username) throws SQLException, IOException, ClassNotFoundException {
         return mediaEntryDAO.fetchByUsername(username);
     }

@@ -3,6 +3,7 @@ package com.tvtracker.enterprise.service;
 import com.tvtracker.enterprise.dao.IUserAccountDAO;
 import com.tvtracker.enterprise.dto.UserAccount;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -65,6 +66,7 @@ public class UserAccountService implements IUserAccountService {
      * @return UserAccount object for the given username
      */
     @Override
+    @Cacheable(value="userAccount", key="username")
     public UserAccount fetchUserAccount(String username) throws SQLException, IOException, ClassNotFoundException {
         if(username == null)
             return null;
