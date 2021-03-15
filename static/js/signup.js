@@ -25,7 +25,7 @@ function signup() {
 function createUser(user) {
     let xhr = new XMLHttpRequest();
 
-    xhr.open("POST", "http://localhost:8080/signUp?Content-Type=application/json");
+    xhr.open("POST", "/signUp");
     xhr.setRequestHeader("Content-Type", "application/json");
 
     xhr.onload = function (result) {
