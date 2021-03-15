@@ -84,7 +84,7 @@ public class MediaEntryDAO extends BaseDAO implements IMediaEntryDAO {
     }
 
     /**
-     * This method sets all media entry column values for SQL statement
+     * This method sets all media entry column values for SQL statements
      *
      * @param mediaEntry source of column values
      */
