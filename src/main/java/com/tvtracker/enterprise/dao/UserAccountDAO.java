@@ -27,12 +27,7 @@ public class UserAccountDAO extends BaseDAO implements IUserAccountDAO {
      */
     @Override
     public boolean save(UserAccount userAccount) throws SQLException, IOException, ClassNotFoundException {
-        setColumnValue("username", userAccount.getUsername());
-        setColumnValue("password", userAccount.getPassword());
-        setColumnValue("email", userAccount.getEmail());
-        setColumnValue("birthDate", userAccount.getBirthDate());
-        setColumnValue("token", userAccount.getToken());
-        setColumnValue("lastLogin", userAccount.getLastLogin());
+        setAllColumnValues(userAccount);
         return insert();
     }
 
@@ -85,10 +80,23 @@ public class UserAccountDAO extends BaseDAO implements IUserAccountDAO {
      */
     @Override
     public boolean update(UserAccount userAccount) throws SQLException, IOException, ClassNotFoundException {
-        setColumnValue("token", userAccount.getToken());
-        setColumnValue("lastLogin", userAccount.getLastLogin());
+        setAllColumnValues(userAccount);
         addWhere("username", userAccount.getUsername());
         return update();
+    }
+
+    /**
+     * This method sets all user account column values for SQL statements
+     *
+     * @param userAccount source of column values
+     */
+    private void setAllColumnValues(UserAccount userAccount) {
+        setColumnValue("username", userAccount.getUsername());
+        setColumnValue("password", userAccount.getPassword());
+        setColumnValue("email", userAccount.getEmail());
+        setColumnValue("birthDate", userAccount.getBirthDate());
+        setColumnValue("token", userAccount.getToken());
+        setColumnValue("lastLogin", userAccount.getLastLogin());
     }
 
     /**
