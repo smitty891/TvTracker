@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
 
@@ -30,35 +30,7 @@
 
 </head>
 <body onload="bindClickHandlers()">
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/">TvTracker</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/">Browse</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/favorites">Favorites</a>
-                </li>
-            </ul>
-
-
-            <div class="d-flex">
-                <a class="nav-link" href="/signup">Login</a>
-                <select id="mediaTypeDropdown">
-                    <option value="movie">Movie</option>
-                    <option value="series">Series</option>
-                </select>
-                <input id="searchTextBox" class="form-control me-2" type="text" placeholder="Search" aria-label="Search">
-                <button id="searchBtn" class="btn btn-outline-success">Search</button>
-            </div>
-        </div>
-    </div>
-</nav>
+<div th:replace="fragments/topnav :: navbar"></div>
 
 <div class="form">
     <input id="username" placeholder="Enter Username"><br><br>
