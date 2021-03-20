@@ -40,6 +40,12 @@ public class TvTrackerController {
         return "start";
     }
 
+
+    @RequestMapping("/signup")
+    public String signup(){
+        return"signup";
+    }
+
     /**
      * Handle the /favorites endpoint
      * @return favorites.html
