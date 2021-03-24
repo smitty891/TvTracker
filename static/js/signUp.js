@@ -34,6 +34,7 @@ function createUser(user) {
             {
                 window.sessionStorage.setItem("TvTrackerToken", result.target.response);
                 window.sessionStorage.setItem("TvTrackerUsername", user.username);
+                showSignInMessage();
                 alert("Successfully created user account and signed in.");
             }
             else if(result.target.status === 409)
