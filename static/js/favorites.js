@@ -9,8 +9,13 @@ function updateMediaEntry(mediaEntry) {
     xhr.setRequestHeader('Content-Type', 'application/json');
 
     xhr.onload = function (result) {
-        if(result && result.target && result.target.status === 200){
-            getUsersMediaEntries();
+        if(result && result.target ) {
+            if (result.target.status === 200) {
+                getUsersMediaEntries();
+            } else if (result.target.status === 401) {
+                alert("Please Sign In");
+                hideSignInMessage();
+            }
         }
     }.bind(this);
 
@@ -26,8 +31,13 @@ function deleteMediaEntry(entryId) {
     xhr.open('DELETE', URL, true);
 
     xhr.onload = function (result) {
-        if(result && result.target && result.target.status === 200){
-            getUsersMediaEntries();
+        if(result && result.target ) {
+            if (result.target.status === 200) {
+                getUsersMediaEntries();
+            } else if (result.target.status === 401) {
+                alert("Please Sign In");
+                hideSignInMessage();
+            }
         }
     }.bind(this);
 
@@ -165,7 +175,7 @@ function getUsersMediaEntries() {
     xhr.open('GET', URL, true);
 
     xhr.onload = function (result) {
-        if(result && result.target && result.target.response){
+        if(result && result.target && result.target.status === 200 && result.target.response){
             const response = JSON.parse(result.target.response);
             if(response) {
                 addDashboardPanels.call(this, response);
@@ -195,10 +205,21 @@ function clearPopupInputs() {
     document.getElementById("watchedCheckbox").checked = false;
 }
 
-function startup() {
+async function startUp() {
     const popupCloseBtn = document.getElementById("popupCloseBtn");
     popupCloseBtn.onclick = hidePopup
 
-    getUsersMediaEntries();
+    // reload page when user signs in
+    document.addEventListener("signedIn", function(){
+        getUsersMediaEntries();
+    });
+
+    // check if user is already signed in
+    let statusCode = await verifyAuthentication();
+
+    if(statusCode === 200){
+        showSignInMessage();
+        getUsersMediaEntries();
+    }
 }
 

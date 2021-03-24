@@ -1,0 +1,12 @@
+#signUpLink {
+    font-weight: bold;
+    margin-right: 8px;
+    float: right;
+    clear: both;
+    color:yellow;
+}
+
+#signInMessage {
+    padding-right:10px;
+    font-weight:bold;
+}

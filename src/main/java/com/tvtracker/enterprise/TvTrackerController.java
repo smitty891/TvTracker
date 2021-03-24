@@ -104,27 +104,33 @@ public class TvTrackerController {
      * @return a valid user token for session authentication
      */
     @GetMapping("/authenticate")
-    public ResponseEntity authenticateUser(@RequestParam(value="username", required=true) String username, @RequestParam(value="password", required=true) String password) {
+    public ResponseEntity authenticateUser(@RequestParam(value="username", required=true) String username, @RequestParam(value="password", defaultValue="") String password, @RequestParam(value="token", defaultValue="") String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        UserAccount userAccount;
-        String token;
+        if(password.isEmpty() && token.isEmpty()) {
+            return new ResponseEntity(headers, HttpStatus.BAD_REQUEST);
+        }
 
         try {
-            userAccount = userAccountService.fetchUserAccount(username);
+            if (!token.isEmpty() && userAccountService.isTokenValid(token, username)) {
+                return new ResponseEntity(token, headers, HttpStatus.OK);
+            }
+
+            UserAccount userAccount = userAccountService.fetchUserAccount(username);
 
             if (userAccount != null && userAccount.getPassword().equals(password)) {
                 token = userAccountService.updateUserToken(userAccount);
             } else {
                 return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        if (token == null) {
+        if (token == null || token.isEmpty()) {
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
