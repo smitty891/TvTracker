@@ -27,6 +27,14 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
+    <script type="text/javascript">
+        $(function() {
+            $("#searchTextBox").autocomplete({
+                source:["Cast Away", "Big Eyes", "American Sniper", "Kingdom of Heaven", "The Walking Dead"],
+                minLength: 2
+            });
+        });
+    </script>
 
     <title>Home</title>
 </head>
