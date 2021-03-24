@@ -113,24 +113,25 @@ public class TvTrackerController {
         }
 
         try {
-            if (!token.isEmpty() && userAccountService.isTokenValid(token, username)) {
-                return new ResponseEntity(token, headers, HttpStatus.OK);
-            }
-
-            UserAccount userAccount = userAccountService.fetchUserAccount(username);
-
-            if (userAccount != null && userAccount.getPassword().equals(password)) {
-                token = userAccountService.updateUserToken(userAccount);
+            if (!token.isEmpty()) {
+                if (!userAccountService.isTokenValid(token, username)) {
+                    return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
+                }
             } else {
-                return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
-            }
+                UserAccount userAccount = userAccountService.fetchUserAccount(username);
 
+                if (userAccount != null && userAccount.getPassword().equals(password)) {
+                    token = userAccountService.updateUserToken(userAccount);
+
+                    if (token == null) {
+                        return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
+                } else {
+                    return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        if (token == null || token.isEmpty()) {
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

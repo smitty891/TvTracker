@@ -17,7 +17,10 @@ async function verifyAuthentication(){
 function authenticate(username, password, token){
     return new Promise(function (resolve, reject) {
         let xhr = new XMLHttpRequest();
-        let params = "username="+username+"&password="+password+"&token="+token;
+
+        let params = "username="+username;
+        if(password) params += "&password="+password;
+        if(token) params += "&token="+token;
 
         xhr.open("GET", "/authenticate?" + params);
 
