@@ -104,27 +104,34 @@ public class TvTrackerController {
      * @return a valid user token for session authentication
      */
     @GetMapping("/authenticate")
-    public ResponseEntity authenticateUser(@RequestParam(value="username", required=true) String username, @RequestParam(value="password", required=true) String password) {
+    public ResponseEntity authenticateUser(@RequestParam(value="username", required=true) String username, @RequestParam(value="password", defaultValue="") String password, @RequestParam(value="token", defaultValue="") String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        UserAccount userAccount;
-        String token;
+        if(password.isEmpty() && token.isEmpty()) {
+            return new ResponseEntity(headers, HttpStatus.BAD_REQUEST);
+        }
 
         try {
-            userAccount = userAccountService.fetchUserAccount(username);
-
-            if (userAccount != null && userAccount.getPassword().equals(password)) {
-                token = userAccountService.updateUserToken(userAccount);
+            if (!token.isEmpty()) {
+                if (!userAccountService.isTokenValid(token, username)) {
+                    return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
+                }
             } else {
-                return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
+                UserAccount userAccount = userAccountService.fetchUserAccount(username);
+
+                if (userAccount != null && userAccount.getPassword().equals(password)) {
+                    token = userAccountService.updateUserToken(userAccount);
+
+                    if (token == null) {
+                        return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
+                } else {
+                    return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        if (token == null) {
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

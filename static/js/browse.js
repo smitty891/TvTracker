@@ -9,8 +9,13 @@ function saveMediaEntry(mediaEntry) {
     xhr.setRequestHeader('Content-Type', 'application/json');
 
     xhr.onload = function (result) {
-        if(result && result.target && result.target.status === 200){
-            console.log("success");
+        if(result && result.target ) {
+            if (result.target.status === 200) {
+                console.log("success");
+            } else if (result.target.status === 401) {
+                alert("Please Sign In");
+                hideSignInMessage();
+            }
         }
     }.bind(this);
 
@@ -150,6 +155,13 @@ function searchBtnClickHandler(){
     callSearchAPI.call(this, this.currentSearchText, this.currentMediaType, this.page);
 }
 
+function searchOnStartUp(){
+    this.currentMediaType = "Movie";
+    this.currentSearchText = "Movie";
+    this.page = 1;
+    callSearchAPI.call(this, this.currentSearchText, this.currentMediaType, this.page);
+}
+
 function nextPageBtnClickHandler(){
     callSearchAPI.call(this, this.currentSearchText, this.currentMediaType, ++this.page);
 }
@@ -171,4 +183,16 @@ function bindClickHandlers(){
 
     this.prevPageBtn = document.getElementById("prevPageBtn");
     this.prevPageBtn.onclick = prevPageBtnClickHandler.bind(this);
+}
+
+async function startUp(){
+    let statusCode = await verifyAuthentication();
+
+    if(statusCode === 200){
+        showSignInMessage();
+    }
+
+    bindClickHandlers();
+    // kick off an initial search
+    searchOnStartUp();
 }
