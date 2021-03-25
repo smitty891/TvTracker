@@ -16,8 +16,11 @@ function updateMediaEntry(mediaEntry) {
                 alert("Please Sign In");
                 hideSignInMessage();
             }
+
+            if (result.target.status !== 200) {
+                hideSpinner();
+            }
         }
-        hideSpinner();
     }.bind(this);
 
     showSpinner();
@@ -40,8 +43,11 @@ function deleteMediaEntry(entryId) {
                 alert("Please Sign In");
                 hideSignInMessage();
             }
+
+            if (result.target.status !== 200) {
+                hideSpinner();
+            }
         }
-        hideSpinner();
     }.bind(this);
 
     showSpinner();

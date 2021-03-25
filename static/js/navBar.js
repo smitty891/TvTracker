@@ -1,16 +1,3 @@
-(function setUpListeners(){
-    window.onmessage = function(e){
-        if (e.data == 'showSignInMessage')
-        {
-            showSignInMessage();
-        }
-        else if (e.data == 'hideSignInMessage')
-        {
-            hideSignInMessage();
-        }
-    };
-}());
-
 function goToBrowse(){
     let tvTrackerIframe = document.getElementById("tvTrackerIframe");
     tvTrackerIframe.src = "/browse";

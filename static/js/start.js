@@ -12,8 +12,15 @@ function addListeners(){
     window.onmessage = function (e) {
         if (e.data == 'showSpinner') {
             showSpinner();
-        } else if (e.data == 'hideSpinner') {
+        }
+        else if (e.data == 'hideSpinner') {
             hideSpinner();
+        }
+        else if (e.data == 'showSignInMessage') {
+            showSignInMessage();
+        }
+        else if (e.data == 'hideSignInMessage') {
+            hideSignInMessage();
         }
     };
 }
