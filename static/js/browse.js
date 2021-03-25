@@ -17,8 +17,10 @@ function saveMediaEntry(mediaEntry) {
                 hideSignInMessage();
             }
         }
+        hideSpinner();
     }.bind(this);
 
+    showSpinner();
     xhr.send(JSON.stringify(mediaEntry));
 }
 
@@ -28,14 +30,14 @@ function panelClickHandler(event) {
     if(panelHeader){
         let mediaEntry = {};
         mediaEntry.entryId = panelHeader.getAttribute("imdbid").replace( /^\D+/g, '');
-        mediaEntry.title = unescape(panelHeader.getAttribute("title"));
+        mediaEntry.title = panelHeader.getAttribute("title");
         mediaEntry.imageUrl = event.currentTarget.querySelector('img').src;
         mediaEntry.type = this.currentMediaType
         mediaEntry.username = window.sessionStorage.getItem("TvTrackerUsername");
 
         document.getElementById("saveBtn").onclick = function(){
             mediaEntry.platform = document.getElementById("platformDropdown").value;
-            mediaEntry.description = document.getElementById("reviewTextBox").value;
+            mediaEntry.description = escape(document.getElementById("reviewTextBox").value);
             mediaEntry.watched = document.getElementById("watchedCheckbox").checked;
 
             saveMediaEntry(mediaEntry);
@@ -141,8 +143,10 @@ function callSearchAPI(text, type, page) {
             this.nextPageBtn.style.visibility = totalResults > (10*this.page) ? 'visible' : 'hidden';
             this.prevPageBtn.style.visibility = this.page > 1 ? 'visible' : 'hidden';
         }
+        hideSpinner();
     }.bind(this);
 
+    showSpinner();
     xhr.send(null);
 }
 
@@ -186,13 +190,6 @@ function bindClickHandlers(){
 }
 
 async function startUp(){
-    let statusCode = await verifyAuthentication();
-
-    if(statusCode === 200){
-        showSignInMessage();
-    }
-
     bindClickHandlers();
-    // kick off an initial search
     searchOnStartUp();
 }

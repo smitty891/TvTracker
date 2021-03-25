@@ -17,8 +17,10 @@ function updateMediaEntry(mediaEntry) {
                 hideSignInMessage();
             }
         }
+        hideSpinner();
     }.bind(this);
 
+    showSpinner();
     xhr.send(JSON.stringify(mediaEntry));
 }
 
@@ -39,8 +41,10 @@ function deleteMediaEntry(entryId) {
                 hideSignInMessage();
             }
         }
+        hideSpinner();
     }.bind(this);
 
+    showSpinner();
     xhr.send(null);
 }
 
@@ -61,14 +65,14 @@ function editIconClickHandler(event) {
         let mediaEntry = {};
         mediaEntry.id = infoElement.getAttribute("entryId");
         mediaEntry.type = infoElement.getAttribute("mediaType");
-        mediaEntry.title = unescape(infoElement.getAttribute("mediaTitle"));
+        mediaEntry.title = infoElement.getAttribute("mediaTitle");
         mediaEntry.imageUrl = infoElement.getAttribute("imageUrl");
         mediaEntry.username = window.sessionStorage.getItem("TvTrackerUsername");
 
         // send updated MediaEntry obj on save button click
         document.getElementById("saveBtn").onclick = function(){
             mediaEntry.platform = platformDropdown.value;
-            mediaEntry.description = descriptionTextBox.value;
+            mediaEntry.description = escape(descriptionTextBox.value);
             mediaEntry.watched = watchedCheckbox.checked;
 
             updateMediaEntry(mediaEntry);
@@ -142,17 +146,17 @@ function addDashboardPanels(mediaEntries) {
                         + '<i class="fa fa-check"></i>'
                     + '</div>'
                     + '<div class="rightSideIcons">'
-                        + '<i class="fa fa-pencil" mediaTitle=' + escape(item.title) + ' entryId=' + item.id + ' description='
-                            + escape(item.description) + ' platform=' + item.platform + ' imageUrl=' + imgUrl +  ' watched='
+                        + '<i class="fa fa-pencil" mediaTitle=' + item.title + ' entryId=' + item.id + ' description='
+                            + item.description + ' platform=' + item.platform + ' imageUrl=' + item.imageUrl +  ' watched='
                             + item.watched + ' mediaType=' + item.type + ' title="Edit" style="cursor:pointer;"></i>'
                         + '<i class="fa fa-trash" entryId=' + item.id + ' title="Delete" style="padding-left:5px;cursor:pointer;"></i>'
                     + '</div>'
-                    + '<div class="favoritesTitle">' + item.title + '</div>'
+                    + '<div class="favoritesTitle">' + unescape(item.title) + '</div>'
                 + '</divwatchedCheckIcon>',
             content: '<div class="panelContent">'
                         + '<img src=' + imgUrl + ' class="mediaImg">'
                     + '</div>'
-                    + '<div class="panelDescription">' + item.description + '</div>'
+                    + '<div class="panelDescription">' + unescape(item.description) + '</div>'
         };
 
         this.dashboard.addPanel(panel);
@@ -182,10 +186,11 @@ function getUsersMediaEntries() {
             } else {
                 addDashboardPanels.call(this, []);
             }
-
         }
+        hideSpinner();
     }.bind(this);
 
+    showSpinner();
     xhr.send(null);
 }
 
@@ -209,17 +214,16 @@ async function startUp() {
     const popupCloseBtn = document.getElementById("popupCloseBtn");
     popupCloseBtn.onclick = hidePopup
 
-    // reload page when user signs in
-    document.addEventListener("signedIn", function(){
-        getUsersMediaEntries();
-    });
+    // load favorites when user signs in
+    window.onmessage = function(e){
+        if (e.data == 'signedIn') {
+            getUsersMediaEntries();
+        }
+    };
 
-    // check if user is already signed in
+    // load favorites if user is already signed in
     let statusCode = await verifyAuthentication();
-
     if(statusCode === 200){
-        showSignInMessage();
         getUsersMediaEntries();
     }
 }
-

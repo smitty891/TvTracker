@@ -4,6 +4,7 @@
     float: right;
     clear: both;
     color:yellow;
+    text-decoration: underline;
 }
 
 #signInMessage {

@@ -1,3 +1,31 @@
+(function setUpListeners(){
+    window.onmessage = function(e){
+        if (e.data == 'showSignInMessage')
+        {
+            showSignInMessage();
+        }
+        else if (e.data == 'hideSignInMessage')
+        {
+            hideSignInMessage();
+        }
+    };
+}());
+
+function goToBrowse(){
+    let tvTrackerIframe = document.getElementById("tvTrackerIframe");
+    tvTrackerIframe.src = "/browse";
+}
+
+function goToFavorites(){
+    let tvTrackerIframe = document.getElementById("tvTrackerIframe");
+    tvTrackerIframe.src = "/favorites";
+}
+
+function goToSignUp(){
+    let tvTrackerIframe = document.getElementById("tvTrackerIframe");
+    tvTrackerIframe.src = "/signup";
+}
+
 async function signIn(){
     const usernameTxt = document.getElementById("usernameTxt");
     const passwordTxt = document.getElementById("passwordTxt");
@@ -5,44 +33,21 @@ async function signIn(){
     const statusCode = await authenticate(usernameTxt.value, passwordTxt.value);
 
     if(statusCode === 200) {
-        const event = new Event("signedIn", {"bubbles":true, "cancelable":false});
-        document.dispatchEvent(event);
+        showSignInMessage();
+        // post event into iframe
+        let tvTrackerIframe = document.getElementById("tvTrackerIframe");
+        tvTrackerIframe.contentWindow.postMessage('signedIn', '*');
+    }
+    else if (statusCode === 401) {
+        alert("Incorrect Password");
+    }
+    else {
+        alert("Error Occurred");
     }
 }
 
-async function verifyAuthentication(){
-    return  await authenticate(window.sessionStorage.getItem("TvTrackerUsername"), null, window.sessionStorage.getItem("TvTrackerToken"));
-}
-
-function authenticate(username, password, token){
-    return new Promise(function (resolve, reject) {
-        let xhr = new XMLHttpRequest();
-
-        let params = "username="+username;
-        if(password) params += "&password="+password;
-        if(token) params += "&token="+token;
-
-        xhr.open("GET", "/authenticate?" + params);
-
-        xhr.onload = function (result) {
-            if (result && result.target) {
-                if (result.target.status === 200) {
-                    window.sessionStorage.setItem("TvTrackerToken", result.target.response);
-                    window.sessionStorage.setItem("TvTrackerUsername", username);
-
-                    showSignInMessage();
-                }
-
-                resolve(result.target.status);
-            }
-        }.bind(this);
-
-        xhr.send(null);
-    });
-}
-
 function signOut(){
-    hideSignInMessage()
+    hideSignInMessage();
     window.sessionStorage.setItem("TvTrackerToken", undefined);
     window.sessionStorage.setItem("TvTrackerUsername", undefined);
 }

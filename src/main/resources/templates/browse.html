@@ -21,18 +21,32 @@
     <script src="https://cdn.syncfusion.com/ej2/ej2-layouts/dist/global/ej2-layouts.min.js" type="text/javascript"></script>
 
     <link href="/css/main.css" rel="stylesheet" type="text/css"/>
-    <script src="/js/favorites.js" type="text/javascript"></script>
-    <script src="/js/authenticate.js" type="text/javascript"></script>
+    <script src="/js/browse.js" type="text/javascript"></script>
     <script src="/js/shared.js" type="text/javascript"></script>
-
-    <script src="https://use.fontawesome.com/dc7e68216b.js"></script>
 
     <title>Home</title>
 </head>
 <body onload="startUp()">
-    <h1>Favorites</h1>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div style="margin:auto">
+            <div class="d-flex">
+                <select id="mediaTypeDropdown">
+                    <option value="movie">Movie</option>
+                    <option value="series">Series</option>
+                </select>
+                <input id="searchTextBox" class="form-control me-2" type="text" placeholder="Search">
+                <button id="searchBtn" class="btn btn-success">Search</button>
+            </div>
+        </div>
+    </nav>
+
+    <h1>Browse</h1>
     <div id="dashDiv"></div>
-    <button id="nextPageBtn" class="btn btn-outline-success" style="visibility:hidden">Next Page ></button>
+
+    <div class="pageBtnDiv">
+        <button id="prevPageBtn" class="btn btn-info pageBtn" style="visibility:hidden">< Previous Page</button>
+        <button id="nextPageBtn" class="btn btn-info pageBtn" style="visibility:hidden">Next Page ></button>
+    </div>
 
     <div id="modelPopup" class="modal">
         <div class="modal-content">
@@ -48,7 +62,7 @@
                     Platform:
                 </label>
                 <select id="platformDropdown">
-                    <option value="null"></option>
+                    <option value=""></option>
                     <option value="hulu">Hulu</option>
                     <option value="netflix">Netflix</option>
                     <option value="hbo">HBO</option>
