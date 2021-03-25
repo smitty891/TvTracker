@@ -223,7 +223,9 @@ async function startUp() {
 
     // load favorites if user is already signed in
     let statusCode = await verifyAuthentication();
-    if(statusCode === 200){
+    if(statusCode === 200) {
         getUsersMediaEntries();
+    } else if (statusCode === 401) {
+        alert("Please Sign In");
     }
 }
