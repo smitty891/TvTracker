@@ -104,7 +104,7 @@ function addDashboardPanels(mediaItems) {
             'sizeX': 1,
             'sizeY': 1,
             header: '<div title=' + escape(item.Title) + ' year=' + item.Year + ' imdbID=' + item.imdbID + ' class="panelHeader">' + item.Title + '&nbsp;(' + item.Year + ')</div>',
-            content: '<div class="panelContent"><img src=' + imgUrl + ' class="mediaImg"></div>'
+            content: '<div class="panelContent pointerCursor"><img src=' + imgUrl + ' class="mediaImg"></div>'
         };
 
         this.dashboard.addPanel(panel);

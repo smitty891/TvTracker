@@ -112,6 +112,10 @@ h1{
     color: darkblue;
 }
 
+.pointerCursor {
+    cursor: pointer;
+}
+
 #tvTrackerIframe {
     position: absolute;
     top: 61px;
