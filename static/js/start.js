@@ -1,6 +1,11 @@
-function startUp(){
+async function startUp(){
     addSpinner();
     addListeners();
+
+    let statusCode = await verifyAuthentication();
+    if(statusCode === 200){
+        showSignInMessage();
+    }
 }
 
 function addListeners(){
