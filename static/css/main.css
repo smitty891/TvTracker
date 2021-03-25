@@ -100,3 +100,22 @@ h1{
 .inputGroup {
     margin: 5px 10px;
 }
+
+.title-link {
+    font-weight: bold;
+    font-size: x-large;
+}
+
+.btn-link {
+    font-weight: bold;
+    text-decoration: none;
+    color: darkblue;
+}
+
+#tvTrackerIframe {
+    position: absolute;
+    top: 61px;
+    height: calc(100% - 61px);
+    width: 100%;
+    border: none
+}

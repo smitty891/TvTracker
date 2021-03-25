@@ -40,6 +40,10 @@ public class TvTrackerController {
         return "start";
     }
 
+    @RequestMapping("/browse")
+    public String browse(){
+        return "browse";
+    }
 
     @RequestMapping("/signup")
     public String signup(){
