@@ -65,7 +65,7 @@ function editIconClickHandler(event) {
         // populate popup with media entry's values
         watchedCheckbox.checked = (infoElement.getAttribute("watched") == 'true');
         platformDropdown.value = infoElement.getAttribute("platform");
-        descriptionTextBox.value = unescape(infoElement.getAttribute("description"));
+        descriptionTextBox.value = unescape(infoElement.getAttribute("description") ?? '');
 
         // begin populating MediaEntry obj for updating
         let mediaEntry = {};
@@ -132,6 +132,30 @@ function buildDashboard() {
     this.dashboard.appendTo("#dashDiv");
 }
 
+function buildPanelHeader(item) {
+    const watchedCheckVisibility = (item.watched  ? 'visible' : 'hidden');
+
+    let header = '<div>'
+        + '<div class="watchedCheckIcon" style="visibility: ' + watchedCheckVisibility + '">'
+        + '<i class="fa fa-check"></i>'
+        + '</div>'
+        + '<div class="rightSideIcons">'
+        + '<i class="fa fa-pencil" mediaTitle=' + item.title + ' entryId=' + item.id;
+
+        if(item.description && item.description !== '') {
+            header += ' description=' + item.description;
+        }
+
+        header += ' platform=' + item.platform + ' imageUrl=' + item.imageUrl +  ' watched='
+            + item.watched + ' mediaType=' + item.type + ' title="Edit" style="cursor:pointer;"></i>'
+        + '<i class="fa fa-trash" entryId=' + item.id + ' title="Delete" style="padding-left:5px;cursor:pointer;"></i>'
+        + '</div>'
+        + '<div class="favoritesTitle">' + unescape(item.title) + '</div>'
+        + '</div>';
+
+    return header
+}
+
 function addDashboardPanels(mediaEntries) {
     buildDashboard();
 
@@ -140,25 +164,13 @@ function addDashboardPanels(mediaEntries) {
     for(let i=0; i<mediaEntries.length; i++){
         const item = mediaEntries[i];
         const imgUrl = item.imageUrl === 'N/A' ? '/images/noImage.png' : item.imageUrl;
-        const watchedCheckVisibility = (item.watched  ? 'visible' : 'hidden');
 
         const panel = {
             'row': row,
             'col': col++,
             'sizeX': 1,
             'sizeY': 1,
-            header: '<div>'
-                    + '<div class="watchedCheckIcon" style="visibility: ' + watchedCheckVisibility + '">'
-                        + '<i class="fa fa-check"></i>'
-                    + '</div>'
-                    + '<div class="rightSideIcons">'
-                        + '<i class="fa fa-pencil" mediaTitle=' + item.title + ' entryId=' + item.id + ' description='
-                            + item.description + ' platform=' + item.platform + ' imageUrl=' + item.imageUrl +  ' watched='
-                            + item.watched + ' mediaType=' + item.type + ' title="Edit" style="cursor:pointer;"></i>'
-                        + '<i class="fa fa-trash" entryId=' + item.id + ' title="Delete" style="padding-left:5px;cursor:pointer;"></i>'
-                    + '</div>'
-                    + '<div class="favoritesTitle">' + unescape(item.title) + '</div>'
-                + '</divwatchedCheckIcon>',
+            header: buildPanelHeader(item),
             content: '<div class="panelContent">'
                         + '<img src=' + imgUrl + ' class="mediaImg">'
                     + '</div>'
@@ -232,6 +244,7 @@ async function startUp() {
     if(statusCode === 200) {
         getUsersMediaEntries();
     } else if (statusCode === 401) {
+        hideSignInMessage();
         alert("Please Sign In");
     }
 }
