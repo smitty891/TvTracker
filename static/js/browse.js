@@ -144,9 +144,11 @@ function callSearchAPI(text, type, page) {
             this.prevPageBtn.style.visibility = this.page > 1 ? 'visible' : 'hidden';
         }
         hideSpinner();
+        enablePageButtons();
     }.bind(this);
 
     showSpinner();
+    disablePageButtons();
     xhr.send(null);
 }
 
@@ -187,6 +189,16 @@ function bindClickHandlers(){
 
     this.prevPageBtn = document.getElementById("prevPageBtn");
     this.prevPageBtn.onclick = prevPageBtnClickHandler.bind(this);
+}
+
+function disablePageButtons() {
+    document.getElementById("nextPageBtn").disabled = true;
+    document.getElementById("prevPageBtn").disabled = true;
+}
+
+function enablePageButtons() {
+    document.getElementById("nextPageBtn").disabled = false;
+    document.getElementById("prevPageBtn").disabled = false;
 }
 
 async function startUp(){
