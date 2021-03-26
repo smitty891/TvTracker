@@ -12,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +33,9 @@ public class TvTrackerController {
     IUserAccountService userAccountService;
     @Autowired
     IMediaEntryService mediaEntryService;
+     List<MediaEntry> mediaEntries;
+
+
 
     /**
      * Handle the / endpoint
@@ -266,5 +272,21 @@ public class TvTrackerController {
         }
 
         return new ResponseEntity(headers, HttpStatus.CREATED);
+    }
+    @GetMapping("/mediaEntriesAutocomplete")
+    @ResponseBody
+    public List<String> mediaEntriesAutocomplete(@RequestParam(value="term", required = false, defaultValue = "") String term) {
+        List<String> suggestions = new ArrayList<String>();
+        suggestions.add("Cast Away");
+        suggestions.add("Big Eyes");
+        suggestions.add("American Sniper");
+        suggestions.add("King of Heaven");
+        suggestions.add("The Walking Dead");
+        suggestions.add("Standing Tall");
+        suggestions.add("The Mummy Returns");
+        suggestions.add("Small Crimes");
+        suggestions.add("Prince of Persia: The Sands of Time");
+        suggestions.add("The Mauritanian");
+        return suggestions;
     }
 }
