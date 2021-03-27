@@ -121,7 +121,7 @@ function addDashboardPanels(mediaItems) {
 function callSearchAPI(text, type, page) {
     const API_KEY = "4ccbc10367msh3a0aae042eaac2ep10144bjsn5bf582dc9c1c";
     const API_HOST = "movie-database-imdb-alternative.p.rapidapi.com";
-    const URL = "https://" + API_HOST + "/?s=" + text + "&page=" + page + "&r=json&type=" + type;
+    const URL = "https://" + API_HOST + "/?s=" + escape(text) + "&page=" + page + "&r=json&type=" + type;
     let totalResults = 0;
 
     const xhr = new XMLHttpRequest();
@@ -144,11 +144,11 @@ function callSearchAPI(text, type, page) {
             this.prevPageBtn.style.visibility = this.page > 1 ? 'visible' : 'hidden';
         }
         hideSpinner();
-        enablePageButtons();
+        enableButtons();
     }.bind(this);
 
     showSpinner();
-    disablePageButtons();
+    disableButtons();
     xhr.send(null);
 }
 
@@ -191,14 +191,16 @@ function bindClickHandlers(){
     this.prevPageBtn.onclick = prevPageBtnClickHandler.bind(this);
 }
 
-function disablePageButtons() {
+function disableButtons() {
     document.getElementById("nextPageBtn").disabled = true;
     document.getElementById("prevPageBtn").disabled = true;
+    document.getElementById("searchBtn").disabled = true;
 }
 
-function enablePageButtons() {
+function enableButtons() {
     document.getElementById("nextPageBtn").disabled = false;
     document.getElementById("prevPageBtn").disabled = false;
+    document.getElementById("searchBtn").disabled = false;
 }
 
 async function startUp(){
