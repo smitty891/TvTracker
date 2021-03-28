@@ -62,6 +62,13 @@ function editIconClickHandler(event) {
         const descriptionTextBox = document.getElementById("reviewTextBox");
         const watchedCheckbox = document.getElementById("watchedCheckbox");
 
+        // preview movie poster
+        const movieTitle = document.getElementById("movieTitle");
+        const moviePoster = document.getElementById("moviePoster");
+
+        movieTitle.innerText = unescape(infoElement.getAttribute("mediaTitle"));
+        moviePoster.src = infoElement.getAttribute("imageUrl");
+
         // populate popup with media entry's values
         watchedCheckbox.checked = (infoElement.getAttribute("watched") == 'true');
         platformDropdown.value = infoElement.getAttribute("platform");
