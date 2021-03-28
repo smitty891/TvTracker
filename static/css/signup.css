@@ -1,0 +1,22 @@
+.container {
+    border: 5px solid #ccc;
+    border-radius: 7px;
+    padding: 20px;
+
+    margin-top: 10%;
+    box-shadow: 4px 4px 6px black;
+
+}
+.row input{
+    margin-left: 30%;
+    width: 40%;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: none;
+}
+.row button {
+
+}
+.row input:hover{
+    border: 2px #d02929;
+}
