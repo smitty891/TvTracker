@@ -26,8 +26,16 @@ function saveMediaEntry(mediaEntry) {
 
 function panelClickHandler(event) {
     const panelHeader = event.currentTarget.querySelector(".panelHeader");
+    const panelContent = event.currentTarget.querySelector(".panelContent");
 
-    if(panelHeader){
+    if(panelHeader && panelContent){
+        // preview movie poster
+        const movieTitle = document.getElementById("movieTitle");
+        const moviePoster = document.getElementById("moviePoster");
+
+        movieTitle.innerText = unescape(panelHeader.title);
+        moviePoster.src = panelContent.querySelector("img").src;
+
         let mediaEntry = {};
         mediaEntry.entryId = panelHeader.getAttribute("imdbid").replace( /^\D+/g, '');
         mediaEntry.title = panelHeader.getAttribute("title");
@@ -42,8 +50,7 @@ function panelClickHandler(event) {
 
             saveMediaEntry(mediaEntry);
 
-            hidePopup();
-            clearPopupInputs();
+            closePopup();
         }.bind(this);
     }
 
@@ -55,13 +62,15 @@ function showPopup() {
     modal.style.display = "block";
 }
 
-function hidePopup(){
+function closePopup(){
+    clearPopupInputs();
+
     const modal = document.getElementById("modelPopup");
     modal.style.display = "none";
 }
 
 function clearPopupInputs() {
-    document.getElementById("platformDropdown").value = "";
+    document.getElementById("platformDropdown").value = "null";
     document.getElementById("reviewTextBox").value = "";
     document.getElementById("watchedCheckbox").checked = false;
 }
@@ -178,7 +187,7 @@ function prevPageBtnClickHandler(){
 
 function bindClickHandlers(){
     const popupCloseBtn = document.getElementById("popupCloseBtn");
-    popupCloseBtn.onclick = hidePopup;
+    popupCloseBtn.onclick = closePopup;
 
     this.searchBtn = document.getElementById("searchBtn");
     this.searchBtn.onclick = searchBtnClickHandler.bind(this);

@@ -58,6 +58,20 @@ h1{
     width: inherit;
 }
 
+.popUpMovieTitle {
+    width:100%;
+    text-align: center;
+    font-size: 1.2vw;
+    color: black;
+    font-weight: bold;
+}
+
+.popUpMoviePoster {
+    height: inherit;
+    width: inherit;
+    margin: 0px auto;
+}
+
 /* The Modal (background) */
 .modal {
     display: none;
