@@ -89,12 +89,12 @@ public class TvTrackerController {
             userAccount = userAccountService.createUserAccount(userAccount);
 
         } catch (Exception e) {
-            log.debug("There was a problem with user signup. Message: " + e.getMessage(), e);
+            log.error("There was a problem with user signup. Message: " + e.getMessage(), e);
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         if (userAccount == null || userAccount.getToken() == null) {
-            log.debug("Null token encountered.");
+            log.error("Null token encountered.");
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
