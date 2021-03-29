@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -74,25 +76,24 @@ public class TvTrackerController {
     public ResponseEntity signUpUser(@RequestBody UserAccount userAccount) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        String token;
 
         try {
             if (userAccountService.userAccountExists(userAccount)) {
                 return new ResponseEntity(headers, HttpStatus.CONFLICT);
             }
 
-            token = userAccountService.createUserAccount(userAccount);
+            userAccount = userAccountService.createUserAccount(userAccount);
 
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        if (token == null) {
+        if (userAccount == null || userAccount.getToken() == null) {
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity(token, headers, HttpStatus.CREATED);
+        return new ResponseEntity(userAccount.getToken(), headers, HttpStatus.CREATED);
     }
 
     /**
@@ -118,16 +119,18 @@ public class TvTrackerController {
 
         try {
             if (!token.isEmpty()) {
-                if (!userAccountService.isTokenValid(token, username)) {
+                if (isTokenInvalid(username, token)) {
                     return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
                 }
             } else {
                 UserAccount userAccount = userAccountService.fetchUserAccount(username);
 
                 if (userAccount != null && userAccount.getPassword().equals(password)) {
-                    token = userAccountService.updateUserToken(userAccount);
+                    userAccount = userAccountService.updateUserToken(userAccount);
 
-                    if (token == null) {
+                    if(userAccount != null) {
+                        token = userAccount.getToken();
+                    } else {
                         return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
                     }
                 } else {
@@ -160,7 +163,7 @@ public class TvTrackerController {
 
         try {
             // authenticate request
-            if (!userAccountService.isTokenValid(token, username)) {
+            if (isTokenInvalid(username, token)) {
                 return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
             }
 
@@ -197,7 +200,7 @@ public class TvTrackerController {
 
         // authenticate request
         try {
-            if (!userAccountService.isTokenValid(token, username)) {
+            if (isTokenInvalid(username, token)) {
                 return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
             }
 
@@ -220,21 +223,21 @@ public class TvTrackerController {
      * 401: authentication token is invalid.
      * 500: SQL Database error occurred.
      *
-     * @param entryId integer uniquely identifying the media entry record
+     * @param mediaEntry a JSON representation of a MediaEntry object
      * @return HttpStatus
      */
     @DeleteMapping("/removeMediaEntry")
-    public ResponseEntity removeMediaEntry(@RequestParam(value="entryId", required=true) int entryId, @RequestParam(value="username", required=true) String username, @RequestParam(value="token", required=true) String token) {
+    public ResponseEntity removeMediaEntry(@RequestBody MediaEntry mediaEntry, @RequestParam(value="username", required=true) String username, @RequestParam(value="token", required=true) String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         // authenticate request
         try {
-            if (!userAccountService.isTokenValid(token, username)) {
+            if (isTokenInvalid(username, token) || !mediaEntry.getUsername().equals(username)) {
                 return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
             }
 
-            if (!mediaEntryService.deleteMediaEntry(entryId)) {
+            if (!mediaEntryService.deleteMediaEntry(mediaEntry)) {
                 return new ResponseEntity(headers, HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
@@ -264,7 +267,7 @@ public class TvTrackerController {
 
         // authenticate request
         try {
-            if (!userAccountService.isTokenValid(token, username)) {
+            if (isTokenInvalid(username, token)) {
                 return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
             }
 
@@ -277,5 +280,9 @@ public class TvTrackerController {
         }
 
         return new ResponseEntity(headers, HttpStatus.CREATED);
+    }
+
+    private boolean isTokenInvalid(String username, String token) throws SQLException, IOException, ClassNotFoundException {
+        return !userAccountService.isTokenValid(userAccountService.fetchUserAccount(username), token);
     }
 }

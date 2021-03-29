@@ -3,6 +3,8 @@ package com.tvtracker.enterprise.service;
 import com.tvtracker.enterprise.dao.IMediaEntryDAO;
 import com.tvtracker.enterprise.dto.MediaEntry;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -22,6 +24,7 @@ public class MediaEntryService implements IMediaEntryService {
      * @return boolean indicating success or failure
      */
     @Override
+    @CacheEvict(value="mediaEntries", key="#mediaEntry.username")
     public boolean createMediaEntry(MediaEntry mediaEntry) throws SQLException, IOException, ClassNotFoundException {
         if(mediaEntry == null)
             return false;
@@ -36,6 +39,7 @@ public class MediaEntryService implements IMediaEntryService {
      * @return boolean indicating success or failure
      */
     @Override
+    @CacheEvict(value="mediaEntries", key="#mediaEntry.username")
     public boolean updateMediaEntry(MediaEntry mediaEntry) throws SQLException, IOException, ClassNotFoundException {
         if(mediaEntry == null){
             return false;
@@ -49,12 +53,13 @@ public class MediaEntryService implements IMediaEntryService {
     /**
      * Removes a MediaEntry record from the database.
      *
-     * @param entryId integer uniquely identifying a MediaEntry record
+     * @param mediaEntry MediaEntry object
      * @return boolean indicating success or failure
      */
     @Override
-    public boolean deleteMediaEntry(int entryId) throws SQLException, IOException, ClassNotFoundException {
-        return mediaEntryDAO.delete(entryId);
+    @CacheEvict(value="mediaEntries", key="#mediaEntry.username")
+    public boolean deleteMediaEntry(MediaEntry mediaEntry) throws SQLException, IOException, ClassNotFoundException {
+        return mediaEntryDAO.delete(mediaEntry.getId());
     }
 
     /**
@@ -64,6 +69,7 @@ public class MediaEntryService implements IMediaEntryService {
      * @return List of user's MediaEntry objects
      */
     @Override
+    @Cacheable(value="mediaEntries", key="#username")
     public List<MediaEntry> fetchMediaEntriesByUsername(String username) throws SQLException, IOException, ClassNotFoundException {
         return mediaEntryDAO.fetchByUsername(username);
     }

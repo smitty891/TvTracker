@@ -5,7 +5,6 @@ function updateMediaEntry(mediaEntry) {
 
     const xhr = new XMLHttpRequest();
     xhr.open('PUT', URL, true);
-
     xhr.setRequestHeader('Content-Type', 'application/json');
 
     xhr.onload = function (result) {
@@ -27,13 +26,14 @@ function updateMediaEntry(mediaEntry) {
     xhr.send(JSON.stringify(mediaEntry));
 }
 
-function deleteMediaEntry(entryId) {
+function deleteMediaEntry(mediaEntry) {
     const username = window.sessionStorage.getItem("TvTrackerUsername");
     const token = window.sessionStorage.getItem("TvTrackerToken");
-    const URL = "/removeMediaEntry?entryId=" + entryId + "&username=" + username + "&token=" + token
+    const URL = "/removeMediaEntry?username=" + username + "&token=" + token
 
     const xhr = new XMLHttpRequest();
     xhr.open('DELETE', URL, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
 
     xhr.onload = function (result) {
         if(result && result.target ) {
@@ -51,36 +51,36 @@ function deleteMediaEntry(entryId) {
     }.bind(this);
 
     showSpinner();
-    xhr.send(null);
+    xhr.send(JSON.stringify(mediaEntry));
 }
 
 function editIconClickHandler(event) {
     const infoElement = event.currentTarget;
 
     if(infoElement){
-        const platformDropdown = document.getElementById("platformDropdown");
-        const descriptionTextBox = document.getElementById("reviewTextBox");
-        const watchedCheckbox = document.getElementById("watchedCheckbox");
+        // get mediaEntry
+        const entryId = infoElement.getAttribute("entryId");
+        let mediaEntry = this.mediaEntries.find(entry => entry.id == entryId);
+
+        if(!mediaEntry){
+            alert("Error");
+            return;
+        }
 
         // preview movie poster
         const movieTitle = document.getElementById("movieTitle");
         const moviePoster = document.getElementById("moviePoster");
-
-        movieTitle.innerText = unescape(infoElement.getAttribute("mediaTitle"));
-        moviePoster.src = infoElement.getAttribute("imageUrl");
+        movieTitle.innerText = unescape(mediaEntry.title);
+        moviePoster.src = mediaEntry.imageUrl;
 
         // populate popup with media entry's values
-        watchedCheckbox.checked = (infoElement.getAttribute("watched") == 'true');
-        platformDropdown.value = infoElement.getAttribute("platform");
-        descriptionTextBox.value = unescape(infoElement.getAttribute("description") ?? '');
+        const platformDropdown = document.getElementById("platformDropdown");
+        const descriptionTextBox = document.getElementById("reviewTextBox");
+        const watchedCheckbox = document.getElementById("watchedCheckbox");
 
-        // begin populating MediaEntry obj for updating
-        let mediaEntry = {};
-        mediaEntry.id = infoElement.getAttribute("entryId");
-        mediaEntry.type = infoElement.getAttribute("mediaType");
-        mediaEntry.title = infoElement.getAttribute("mediaTitle");
-        mediaEntry.imageUrl = infoElement.getAttribute("imageUrl");
-        mediaEntry.username = window.sessionStorage.getItem("TvTrackerUsername");
+        watchedCheckbox.checked = mediaEntry.watched;
+        platformDropdown.value = mediaEntry.platform
+        descriptionTextBox.value = unescape(mediaEntry.description);
 
         // send updated MediaEntry obj on save button click
         document.getElementById("saveBtn").onclick = function(){
@@ -100,13 +100,17 @@ function editIconClickHandler(event) {
 
 function deleteIconClickHandler(event) {
     const entryId = event.currentTarget.getAttribute("entryId");
+    let mediaEntry = this.mediaEntries.find(entry => entry.id == entryId);
+
+    if(!mediaEntry){
+        alert("Error");
+        return;
+    }
 
     const deleteEntry = confirm("Proceeding will permanently remove this media entry.");
 
     if (deleteEntry == true) {
-        deleteMediaEntry(entryId);
-    } else {
-        console.log("You pressed Cancel!");
+        deleteMediaEntry(mediaEntry);
     }
 }
 
@@ -147,14 +151,7 @@ function buildPanelHeader(item) {
         + '<i class="fa fa-check"></i>'
         + '</div>'
         + '<div class="rightSideIcons">'
-        + '<i class="fa fa-pencil" mediaTitle=' + item.title + ' entryId=' + item.id;
-
-        if(item.description && item.description !== '') {
-            header += ' description=' + item.description;
-        }
-
-        header += ' platform=' + item.platform + ' imageUrl=' + item.imageUrl +  ' watched='
-            + item.watched + ' mediaType=' + item.type + ' title="Edit" style="cursor:pointer;"></i>'
+        + '<i class="fa fa-pencil" entryId=' + item.id + ' title="Edit" style="cursor:pointer;"></i>'
         + '<i class="fa fa-trash" entryId=' + item.id + ' title="Delete" style="padding-left:5px;cursor:pointer;"></i>'
         + '</div>'
         + '<div class="favoritesTitle">' + unescape(item.title) + '</div>'
@@ -163,13 +160,13 @@ function buildPanelHeader(item) {
     return header
 }
 
-function addDashboardPanels(mediaEntries) {
+function addDashboardPanels() {
     buildDashboard();
 
     let row = 0;
     let col = 0;
-    for(let i=0; i<mediaEntries.length; i++){
-        const item = mediaEntries[i];
+    for(let i=0; i<this.mediaEntries.length; i++){
+        const item = this.mediaEntries[i];
         const imgUrl = item.imageUrl === 'N/A' ? '/images/noImage.png' : item.imageUrl;
 
         const panel = {
@@ -206,11 +203,8 @@ function getUsersMediaEntries() {
     xhr.onload = function (result) {
         if(result && result.target && result.target.status === 200 && result.target.response){
             const response = JSON.parse(result.target.response);
-            if(response) {
-                addDashboardPanels.call(this, response);
-            } else {
-                addDashboardPanels.call(this, []);
-            }
+            this.mediaEntries = response ?? [];
+            addDashboardPanels.call(this);
         }
         hideSpinner();
     }.bind(this);

@@ -17,7 +17,7 @@ public interface IUserAccountService {
      * @param userAccount UserAccount object representing a user to be created
      * @return newly created UserAccount object
      */
-    String createUserAccount(UserAccount userAccount) throws SQLException, IOException, ClassNotFoundException;
+    UserAccount createUserAccount(UserAccount userAccount) throws SQLException, IOException, ClassNotFoundException;
 
     /**
      * Indicates whether a user with the given username already exists.
@@ -40,17 +40,17 @@ public interface IUserAccountService {
     /**
      * Indicates whether a token is valid for a given UserAccount
      *
+     * @param userAccount UserAccount object to compare token against
      * @param token String to validate for the given user
-     * @param username String uniquely identifying a user
      * @return boolean indicating whether the token is valid for the given user
      */
-    boolean isTokenValid(String token, String username) throws SQLException, IOException, ClassNotFoundException;
+    boolean isTokenValid(UserAccount userAccount, String token) throws SQLException, IOException, ClassNotFoundException;
 
     /**
      * Updates the token and lastLogin for a UserAccount
      *
      * @param userAccount UserAccount object to create a new valid token for
-     * @return new valid token for the given UserAccount
+     * @return UserAccount object containing a valid token
      */
-    String updateUserToken(UserAccount userAccount) throws SQLException, IOException, ClassNotFoundException;
+    UserAccount updateUserToken(UserAccount userAccount) throws SQLException, IOException, ClassNotFoundException;
 }

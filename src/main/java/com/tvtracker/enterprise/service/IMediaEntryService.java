@@ -29,10 +29,10 @@ public interface IMediaEntryService {
     /**
      * Removes a MediaEntry record from the database.
      *
-     * @param entryId integer uniquely identifying a MediaEntry record
+     * @param mediaEntry MediaEntry object
      * @return boolean indicating success or failure
      */
-    boolean deleteMediaEntry(int entryId) throws SQLException, IOException, ClassNotFoundException;
+    boolean deleteMediaEntry(MediaEntry mediaEntry) throws SQLException, IOException, ClassNotFoundException;
 
     /**
      * Retrieves all MediaEntry objects for a given user

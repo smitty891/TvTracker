@@ -49,17 +49,18 @@ class EnterpriseApplicationTests {
         userAccount.setPassword(TEST_USER_PASSWORD);
         userAccount.setEmail("testUser@testSite.com");
 
-        String token = userAccountService.createUserAccount(userAccount);
+        userAccountService.createUserAccount(userAccount);
 
-        Assert.notNull(token, "Creating user account returned null indicating username is not unique.");
-
-        return token;
+        return userAccount.getToken();
     }
 
     private void returnsUserAccountWithValidToken(String token) throws Exception {
         Assert.notNull(token, "Creating user account returned null indicating username is not unique.");
 
-        boolean isValid = userAccountService.isTokenValid(token, TEST_USERNAME);
+        UserAccount userAccount = userAccountService.fetchUserAccount(TEST_USERNAME);
+        Assert.notNull(userAccount, "Could not find the newly created user account.");
+
+        boolean isValid = userAccountService.isTokenValid(userAccount, token);
 
         Assert.isTrue(isValid, "Token returned from user account creation was not valid.");
     }
@@ -77,7 +78,7 @@ class EnterpriseApplicationTests {
         userAccount.setPassword(TEST_USER_PASSWORD);
         userAccount.setEmail("testUser@testSite.com");
 
-        String token = userAccountService.createUserAccount(userAccount);
+        userAccountService.createUserAccount(userAccount);
     }
 
     private void whenUserCreatesNewMediaEntry() throws Exception {
