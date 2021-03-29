@@ -4,6 +4,8 @@ import com.tvtracker.enterprise.dto.MediaEntry;
 import com.tvtracker.enterprise.dto.UserAccount;
 import com.tvtracker.enterprise.service.IMediaEntryService;
 import com.tvtracker.enterprise.service.IUserAccountService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -32,6 +34,8 @@ public class TvTrackerController {
     IUserAccountService userAccountService;
     @Autowired
     IMediaEntryService mediaEntryService;
+
+    Logger log = LoggerFactory.getLogger(this.getClass());
 
     /**
      * Handle the / endpoint
@@ -76,6 +80,7 @@ public class TvTrackerController {
     public ResponseEntity signUpUser(@RequestBody UserAccount userAccount) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        String token;
 
         try {
             if (userAccountService.userAccountExists(userAccount)) {
@@ -86,13 +91,16 @@ public class TvTrackerController {
 
         } catch (Exception e) {
             e.printStackTrace();
+            log.debug("There was a problem with user signup. Message: " + e.getMessage(), e);
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         if (userAccount == null || userAccount.getToken() == null) {
+            log.debug("Null token encountered.");
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        log.info("User created successfully!");
         return new ResponseEntity(userAccount.getToken(), headers, HttpStatus.CREATED);
     }
 
@@ -112,14 +120,17 @@ public class TvTrackerController {
     public ResponseEntity authenticateUser(@RequestParam(value="username", required=true) String username, @RequestParam(value="password", defaultValue="") String password, @RequestParam(value="token", defaultValue="") String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        log.debug("User Authentication endpoint.");
 
         if(password.isEmpty() && token.isEmpty()) {
+            log.info("No credentials.");
             return new ResponseEntity(headers, HttpStatus.BAD_REQUEST);
         }
 
         try {
             if (!token.isEmpty()) {
                 if (isTokenInvalid(username, token)) {
+                    log.info("Invalid token");
                     return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
                 }
             } else {
@@ -129,16 +140,20 @@ public class TvTrackerController {
                     userAccount = userAccountService.updateUserToken(userAccount);
 
                     if(userAccount != null) {
+                        log.info("Token updated.");
                         token = userAccount.getToken();
                     } else {
+                        log.debug("Null token encountered.");
                         return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
                     }
                 } else {
+                    log.debug("Unauthorized token.");
                     return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
+            log.debug("There was an authentication problem encountered. Message: " + e.getMessage(), e);
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -160,10 +175,12 @@ public class TvTrackerController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         List<MediaEntry> mediaEntries;
+        log.debug("Enterying retrieve user media entries endpoint.");
 
         try {
             // authenticate request
             if (isTokenInvalid(username, token)) {
+                log.info("Unauthorized token");
                 return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
             }
 
@@ -171,10 +188,12 @@ public class TvTrackerController {
 
         } catch (Exception e) {
             e.printStackTrace();
+            log.error("There was a problem retrieving media entries. Message: " + e.getMessage(), e);
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         if (mediaEntries == null) {
+            log.info("Null entry received.");
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -197,17 +216,21 @@ public class TvTrackerController {
     public ResponseEntity editMediaEntry(@RequestBody MediaEntry mediaEntry, @RequestParam(value="username", required=true) String username, @RequestParam(value="token", required=true) String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-
+        log.debug("Entering Edit Media Entry endpoint.");
         // authenticate request
         try {
             if (isTokenInvalid(username, token)) {
+                log.info("Unauthorized token");
                 return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
             }
 
             if (!mediaEntryService.updateMediaEntry(mediaEntry)) {
+                log.info("Bad HTTP Request");
                 return new ResponseEntity(headers, HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
+            e.printStackTrace();
+            log.error("There was a problem editing media entry. Message: " + e.getMessage(), e);
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -230,21 +253,26 @@ public class TvTrackerController {
     public ResponseEntity removeMediaEntry(@RequestBody MediaEntry mediaEntry, @RequestParam(value="username", required=true) String username, @RequestParam(value="token", required=true) String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        log.debug("Entering delete media entry endpoint");
 
         // authenticate request
         try {
             if (isTokenInvalid(username, token) || !mediaEntry.getUsername().equals(username)) {
+                log.info("Unauthorized token");
                 return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
             }
 
             if (!mediaEntryService.deleteMediaEntry(mediaEntry)) {
+                log.info("Bad HTTP Request");
                 return new ResponseEntity(headers, HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
             e.printStackTrace();
+            log.error("Unable to delete the media entry with ID " + entryId + ", message: " + e.getMessage(), e);
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        log.info("Media entry with ID " + entryId + " was deleted successfully.");
         return new ResponseEntity(headers, HttpStatus.OK);
     }
 
@@ -264,21 +292,25 @@ public class TvTrackerController {
     public ResponseEntity addMediaEntry(@RequestBody MediaEntry mediaEntry, @RequestParam(value="username", required=true) String username, @RequestParam(value="token", required=true) String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-
+        log.debug("Entering Add Media Entry endpoint.");
         // authenticate request
         try {
             if (isTokenInvalid(username, token)) {
+                log.info("Unauthorized token.");
                 return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
             }
 
             if (!mediaEntryService.createMediaEntry(mediaEntry)) {
+                log.info("Bad HTTP Request.");
                 return new ResponseEntity(headers, HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
             e.printStackTrace();
+            log.error("Unable to add the media entry. Message: " + e.getMessage(), e);
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        log.info("Entry created!");
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 
