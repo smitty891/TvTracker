@@ -44,15 +44,15 @@
     <div id="dashDiv"></div>
 
     <div class="pageBtnDiv">
-        <button id="prevPageBtn" class="btn btn-info pageBtn" style="visibility:hidden">< Previous Page</button>
-        <button id="nextPageBtn" class="btn btn-info pageBtn" style="visibility:hidden">Next Page ></button>
+        <button id="prevPageBtn" class="btn btn-info pageBtn hidden">< Previous Page</button>
+        <button id="nextPageBtn" class="btn btn-info pageBtn hidden">Next Page ></button>
     </div>
 
     <div id="modelPopup" class="modal">
         <div class="modal-content">
             <span id="popupCloseBtn" class="close">&times;</span>
             <h2 id="movieTitle" class="popUpMovieTitle"></h2>
-            <img id="moviePoster" class="popUpMoviePoster" src="">
+            <img id="moviePoster" class="popUpMoviePoster">
             <div class="form-check inputGroup">
                 <label class="form-check-label" for="watchedCheckbox">
                     Watched
@@ -78,7 +78,7 @@
                 </label>
                 <input id="reviewTextBox" class="form-control" type="text" maxlength="50">
             </div>
-            <button id="saveBtn" class="btn btn-outline-success" style="margin: 20px;">Save</button>
+            <button id="saveBtn" class="btn btn-outline-success saveBtnMargin">Save</button>
         </div>
     </div>
 </body>
