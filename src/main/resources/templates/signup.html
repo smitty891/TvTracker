@@ -16,12 +16,19 @@
     <title>TvTracker Sign-up</title>
 </head>
 <body>
-    <div class="form">
+<!-- Create account form -->
+    <div class="form createAccountForm">
+        <h5>Enter a username</h5>
         <input id="username" placeholder="Enter Username"><br><br>
+        <h5>Enter an email</h5>
         <input type="email" id="email" placeholder="Enter Email"><br><br>
+        <h5>Enter your birthdate</h5>
         <input type="date" id="birthdate" placeholder="Enter Birthdate"><br><br>
+        <h5>Enter a password</h5>
         <input type="password" id="password" placeholder="Enter Password"><br><br>
+        <h5>Confirm your password</h5>
         <input type="password" id="confirmPassword" placeholder="Confirm password"><br><br>
+        <button onclick="goToBrowse()">Cancel</button>
         <button onclick="signup()">Submit</button>
     </div>
 </body>
