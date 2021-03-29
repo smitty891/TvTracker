@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -78,27 +80,26 @@ public class TvTrackerController {
     public ResponseEntity signUpUser(@RequestBody UserAccount userAccount) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        String token;
 
         try {
             if (userAccountService.userAccountExists(userAccount)) {
-                log.debug("Error during signup.");
                 return new ResponseEntity(headers, HttpStatus.CONFLICT);
             }
 
-            token = userAccountService.createUserAccount(userAccount);
+            userAccount = userAccountService.createUserAccount(userAccount);
 
         } catch (Exception e) {
             log.debug("There was a problem with user signup. Message: " + e.getMessage(), e);
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        if (token == null) {
+        if (userAccount == null || userAccount.getToken() == null) {
             log.debug("Null token encountered.");
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
         log.info("User created successfully!");
-        return new ResponseEntity(token, headers, HttpStatus.CREATED);
+        return new ResponseEntity(userAccount.getToken(), headers, HttpStatus.CREATED);
     }
 
     /**
@@ -126,7 +127,7 @@ public class TvTrackerController {
 
         try {
             if (!token.isEmpty()) {
-                if (!userAccountService.isTokenValid(token, username)) {
+                if (isTokenInvalid(username, token)) {
                     log.info("Invalid token");
                     return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
                 }
@@ -134,10 +135,12 @@ public class TvTrackerController {
                 UserAccount userAccount = userAccountService.fetchUserAccount(username);
 
                 if (userAccount != null && userAccount.getPassword().equals(password)) {
-                    log.info("Token updated.");
-                    token = userAccountService.updateUserToken(userAccount);
+                    userAccount = userAccountService.updateUserToken(userAccount);
 
-                    if (token == null) {
+                    if(userAccount != null) {
+                        log.info("Token updated.");
+                        token = userAccount.getToken();
+                    } else {
                         log.debug("Null token encountered.");
                         return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
                     }
@@ -169,11 +172,11 @@ public class TvTrackerController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         List<MediaEntry> mediaEntries;
-        log.debug("Enterying retrieve user media entries endpoint.");
+        log.debug("Entering retrieve user media entries endpoint.");
 
         try {
             // authenticate request
-            if (!userAccountService.isTokenValid(token, username)) {
+            if (isTokenInvalid(username, token)) {
                 log.info("Unauthorized token");
                 return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
             }
@@ -210,9 +213,10 @@ public class TvTrackerController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         log.debug("Entering Edit Media Entry endpoint.");
-        // authenticate request
+
         try {
-            if (!userAccountService.isTokenValid(token, username)) {
+            // authenticate request
+            if (isTokenInvalid(username, token)) {
                 log.info("Unauthorized token");
                 return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
             }
@@ -226,6 +230,7 @@ public class TvTrackerController {
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        log.info("Entry updated!");
         return new ResponseEntity(headers, HttpStatus.OK);
     }
 
@@ -238,34 +243,33 @@ public class TvTrackerController {
      * 401: authentication token is invalid.
      * 500: SQL Database error occurred.
      *
-     * @param entryId integer uniquely identifying the media entry record
+     * @param mediaEntry a JSON representation of a MediaEntry object
      * @return HttpStatus
      */
     @DeleteMapping("/removeMediaEntry")
-    public ResponseEntity removeMediaEntry(@RequestParam(value="entryId", required=true) int entryId, @RequestParam(value="username", required=true) String username, @RequestParam(value="token", required=true) String token) {
-        log.debug("Entering delete media entry endpoint");
+    public ResponseEntity removeMediaEntry(@RequestBody MediaEntry mediaEntry, @RequestParam(value="username", required=true) String username, @RequestParam(value="token", required=true) String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        log.debug("Entering delete media entry endpoint");
 
-        // authenticate request
         try {
-            if (!userAccountService.isTokenValid(token, username)) {
+            // authenticate request
+            if (isTokenInvalid(username, token) || !mediaEntry.getUsername().equals(username)) {
                 log.info("Unauthorized token");
                 return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
             }
 
-            if (!mediaEntryService.deleteMediaEntry(entryId)) {
+            if (!mediaEntryService.deleteMediaEntry(mediaEntry)) {
                 log.info("Bad HTTP Request");
                 return new ResponseEntity(headers, HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
-            log.error("Unable to delete the media entry with ID " + entryId + ", message: " + e.getMessage(), e);
+            log.error("Unable to delete the media entry with ID " + mediaEntry.getId() + ", message: " + e.getMessage(), e);
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        log.info("Media entry with ID " + entryId + " was deleted successfully.");
+        log.info("Media entry with ID " + mediaEntry.getId() + " was deleted successfully.");
         return new ResponseEntity(headers, HttpStatus.OK);
-
     }
 
     /**
@@ -285,9 +289,10 @@ public class TvTrackerController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         log.debug("Entering Add Media Entry endpoint.");
-        // authenticate request
+
         try {
-            if (!userAccountService.isTokenValid(token, username)) {
+            // authenticate request
+            if (isTokenInvalid(username, token)) {
                 log.info("Unauthorized token.");
                 return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
             }
@@ -300,7 +305,12 @@ public class TvTrackerController {
             log.error("Unable to add the media entry. Message: " + e.getMessage(), e);
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
         log.info("Entry created!");
         return new ResponseEntity(headers, HttpStatus.CREATED);
+    }
+
+    private boolean isTokenInvalid(String username, String token) throws SQLException, IOException, ClassNotFoundException {
+        return !userAccountService.isTokenValid(userAccountService.fetchUserAccount(username), token);
     }
 }

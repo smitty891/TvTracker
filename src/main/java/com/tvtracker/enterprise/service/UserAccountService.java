@@ -3,6 +3,8 @@ package com.tvtracker.enterprise.service;
 import com.tvtracker.enterprise.dao.IUserAccountDAO;
 import com.tvtracker.enterprise.dto.UserAccount;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -31,7 +33,8 @@ public class UserAccountService implements IUserAccountService {
      * @return newly created UserAccount object
      */
     @Override
-    public String createUserAccount(UserAccount userAccount) throws SQLException, IOException, ClassNotFoundException {
+    @CachePut(value="userAccount", key="#userAccount.username")
+    public UserAccount createUserAccount(UserAccount userAccount) throws SQLException, IOException, ClassNotFoundException {
         String token = generateNewToken();
         userAccount.setToken(token);
 
@@ -40,8 +43,9 @@ public class UserAccountService implements IUserAccountService {
 
         boolean success = userAccountDAO.save(userAccount);
 
-        if(success)
-            return token;
+        if(success) {
+            return userAccount;
+        }
 
         return null;
     }
@@ -65,6 +69,7 @@ public class UserAccountService implements IUserAccountService {
      * @return UserAccount object for the given username
      */
     @Override
+    @Cacheable(value="userAccount", key="#username")
     public UserAccount fetchUserAccount(String username) throws SQLException, IOException, ClassNotFoundException {
         if(username == null)
             return null;
@@ -75,14 +80,12 @@ public class UserAccountService implements IUserAccountService {
     /**
      * Indicates whether a token is valid for a given UserAccount
      *
+     * @param userAccount UserAccount object to compare token against
      * @param token String to validate for the given user
-     * @param username String uniquely identifying a user
      * @return boolean indicating whether the token is valid for the given user
      */
     @Override
-    public boolean isTokenValid(String token, String username) throws SQLException, IOException, ClassNotFoundException {
-        UserAccount userAccount = fetchUserAccount(username);
-
+    public boolean isTokenValid(UserAccount userAccount, String token) throws SQLException, IOException, ClassNotFoundException {
         if(userAccount == null || userAccount.getToken() == null || userAccount.getLastLogin() == null)
             return false;
 
@@ -101,10 +104,11 @@ public class UserAccountService implements IUserAccountService {
      * Updates the token and lastLogin for a UserAccount
      *
      * @param userAccount UserAccount object to create a new valid token for
-     * @return new valid token for the given UserAccount
+     * @return UserAccount object containing a valid token
      */
     @Override
-    public String updateUserToken(UserAccount userAccount) throws SQLException, IOException, ClassNotFoundException {
+    @CachePut(value="userAccount", key="#userAccount.username")
+    public UserAccount updateUserToken(UserAccount userAccount) throws SQLException, IOException, ClassNotFoundException {
         if(userAccount == null)
             return null;
 
@@ -115,7 +119,7 @@ public class UserAccountService implements IUserAccountService {
         boolean success = userAccountDAO.update(userAccount);
 
         if(success) {
-            return token;
+            return userAccount;
         }
 
         return null;
