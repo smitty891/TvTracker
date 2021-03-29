@@ -4,6 +4,8 @@ import com.tvtracker.enterprise.dto.MediaEntry;
 import com.tvtracker.enterprise.dto.UserAccount;
 import com.tvtracker.enterprise.service.IMediaEntryService;
 import com.tvtracker.enterprise.service.IUserAccountService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,8 @@ public class TvTrackerController {
     IUserAccountService userAccountService;
     @Autowired
     IMediaEntryService mediaEntryService;
+
+    Logger log = LoggerFactory.getLogger(this.getClass());
 
     /**
      * Handle the / endpoint
@@ -225,24 +229,29 @@ public class TvTrackerController {
      */
     @DeleteMapping("/removeMediaEntry")
     public ResponseEntity removeMediaEntry(@RequestParam(value="entryId", required=true) int entryId, @RequestParam(value="username", required=true) String username, @RequestParam(value="token", required=true) String token) {
+        log.debug("Entering delete media entry endpoint");
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         // authenticate request
         try {
             if (!userAccountService.isTokenValid(token, username)) {
+                log.info("Unauthorized token");
                 return new ResponseEntity(headers, HttpStatus.UNAUTHORIZED);
             }
 
             if (!mediaEntryService.deleteMediaEntry(entryId)) {
+                log.info("Bad HTTP Request");
                 return new ResponseEntity(headers, HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Unable to delete the media entry with ID " + entryId + ", message: " + e.getMessage(), e);
             return new ResponseEntity(headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        log.info("Media entry with ID " + entryId + "was deleted successfully.");
         return new ResponseEntity(headers, HttpStatus.OK);
+
     }
 
     /**
