@@ -137,3 +137,15 @@ h1{
     width: 100%;
     border: none
 }
+
+.hidden {
+    visibility: hidden;
+}
+
+.saveBtnMargin {
+    margin: 20px;
+}
+
+.createAccountForm {
+    padding: 20px;
+}
