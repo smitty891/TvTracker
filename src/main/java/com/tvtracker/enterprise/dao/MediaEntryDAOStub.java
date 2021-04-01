@@ -17,8 +17,8 @@ import java.util.List;
 @Repository
 @Profile("test")
 public class MediaEntryDAOStub implements  IMediaEntryDAO {
-    HashMap<Integer, MediaEntry> entriesByID = new HashMap<Integer, MediaEntry>();
-    HashMap<String, HashMap<Integer, MediaEntry>> entriesByUsername = new HashMap<String, HashMap<Integer, MediaEntry>>();
+    HashMap<Integer, MediaEntry> entriesByID = new HashMap<>();
+    HashMap<String, HashMap<Integer, MediaEntry>> entriesByUsername = new HashMap<>();
 
     /**
      * Method for creating a new MediaEntry record in the database

@@ -120,8 +120,9 @@ public class BaseDAO {
      * @param value value to be populated into the given column
      */
     public void setColumnValue(String column, Object value) {
-        if(columnValues == null)
+        if(columnValues == null) {
             columnValues = new HashMap<>();
+        }
 
         columnValues.put(column, value);
     }
