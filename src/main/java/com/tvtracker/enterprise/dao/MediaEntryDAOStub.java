@@ -60,7 +60,7 @@ public class MediaEntryDAOStub implements  IMediaEntryDAO {
      * @return MediaEntry object representation of corresponding database record
      */
     @Override
-    public MediaEntry fetch(int id) {
+    public MediaEntry fetchByID(int id) {
         return entriesByID.get(id);
     }
 

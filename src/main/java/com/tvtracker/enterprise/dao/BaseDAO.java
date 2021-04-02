@@ -258,7 +258,7 @@ public class BaseDAO {
      * @return ArrayList of key value pairs
      */
     private ArrayList<HashMap<String, Object>> getResultList(ResultSet resultSet) throws SQLException {
-        ArrayList<HashMap<String, Object>> results = new ArrayList<HashMap<String, Object>>();
+        ArrayList<HashMap<String, Object>> results = new ArrayList<>();
         HashMap<String, Object> valuesMap;
 
             ResultSetMetaData metaData = resultSet.getMetaData();
