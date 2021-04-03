@@ -42,7 +42,7 @@ function createUser(user) {
                 alert("This username already exists.");
             }
             else {
-                alert("Error occurred. User account was not created.");
+                alert("Error occurred. User account was not created. Site returned HTTP code: " + result.target.status);
             }
         }
     }.bind(this);
