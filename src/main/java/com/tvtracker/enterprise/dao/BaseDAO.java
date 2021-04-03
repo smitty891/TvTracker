@@ -132,45 +132,51 @@ public class BaseDAO {
      * @return boolean indicating whether update was successful
      */
     public boolean update() throws SQLException, IOException, ClassNotFoundException {
-        StringBuffer sql = new StringBuffer();
+        int numOfUpdates = 0;
+        try{
+            StringBuffer sql = new StringBuffer();
 
-        sql.append("UPDATE ").append(tableName).append(" SET ");
+            sql.append("UPDATE ").append(tableName).append(" SET ");
 
-        int index = 0;
-        for(Map.Entry entry: columnValues.entrySet()) {
-            index++;
-            String column = (String) entry.getKey();
-            Object value = entry.getValue();
+            int index = 0;
+            for(Map.Entry entry: columnValues.entrySet()) {
+                index++;
+                String column = (String) entry.getKey();
+                Object value = entry.getValue();
 
-            sql.append(column).append(" = ");
+                sql.append(column).append(" = ");
 
-            if(value instanceof String || value instanceof Timestamp) {
-                sql.append("'").append(value.toString()).append("'");
-            } else {
-                sql.append(value);
+                if(value instanceof String || value instanceof Timestamp) {
+                    sql.append("'").append(value.toString()).append("'");
+                } else {
+                    sql.append(value);
+                }
+
+                if(index < columnValues.size()) {
+                    sql.append(", ");
+                }
             }
 
-            if(index < columnValues.size()) {
-                sql.append(", ");
+            columnValues = null;
+
+            if(whereCondition != null) {
+                sql.append(whereCondition);
+                whereCondition = null;
             }
+
+            Connection conn = getConnection();
+            Statement statement = conn.createStatement();
+
+            numOfUpdates = statement.executeUpdate(sql.toString());
+
+            statement.close();
+            conn.close();
+
+            return numOfUpdates > 0;
+        } catch (IOException e){
+            e.printStackTrace();
+            return numOfUpdates >= 0;
         }
-
-        columnValues = null;
-
-        if(whereCondition != null) {
-            sql.append(whereCondition);
-            whereCondition = null;
-        }
-
-        Connection conn = getConnection();
-        Statement statement = conn.createStatement();
-
-        int numOfUpdates = statement.executeUpdate(sql.toString());
-
-        statement.close();
-        conn.close();
-
-        return numOfUpdates > 0;
     }
 
     /**
