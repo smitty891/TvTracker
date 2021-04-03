@@ -2,11 +2,19 @@ package com.tvtracker.enterprise.dto;
 
 import lombok.Data;
 
-@Data
-public class MediaEntry {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
+public @Data
+class MediaEntry {
     /**
      * MediaEntry's unique identifier
      */
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private String title;
     private String username;
