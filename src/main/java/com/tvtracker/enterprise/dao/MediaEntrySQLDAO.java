@@ -33,6 +33,7 @@ public class MediaEntrySQLDAO implements IMediaEntryDAO {
     @Override
     public boolean delete(int id) throws SQLException, IOException, ClassNotFoundException {
         mediaEntryRepository.deleteById(id);
+        return true;
     }
 
     @Override
