@@ -276,17 +276,25 @@ public class TvTrackerController {
     @GetMapping("/mediaEntriesAutocomplete")
     @ResponseBody
     public List<String> mediaEntriesAutocomplete(@RequestParam(value="term", required = false, defaultValue = "") String term) {
-        List<String> suggestions = new ArrayList<String>();
-        suggestions.add("Cast Away");
-        suggestions.add("Big Eyes");
-        suggestions.add("American Sniper");
-        suggestions.add("King of Heaven");
-        suggestions.add("The Walking Dead");
-        suggestions.add("Standing Tall");
-        suggestions.add("The Mummy Returns");
-        suggestions.add("Small Crimes");
-        suggestions.add("Prince of Persia: The Sands of Time");
-        suggestions.add("The Mauritanian");
-        return suggestions;
+
+        List<String> allMediaEntries = new ArrayList<String>();
+
+
+        try {
+            List<MediaEntry> mediaEntries = mediaEntryService.fetchMediaEntriesByUsername(term);
+            for (MediaEntry mediaEntry : mediaEntries) {
+                allMediaEntries.add(mediaEntry.toString());
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return new ArrayList<String>();
+        }
+        return allMediaEntries;
+
+        }
     }
-}
+
