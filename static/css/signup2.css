@@ -1,0 +1,47 @@
+input{
+    border: 2px solid black;
+    font-size: 12px;
+
+
+}
+
+
+.container{
+    border: 2px solid white;
+    max-width: 50%;
+    box-shadow: 10px 5px 5px #cfcfcf;
+    margin-top: 100px;
+    border-radius: 12px;
+    background-color: #6c757d;
+    height: 600px;
+}
+.container input{
+    margin-left: 30%;
+    width: 40%;
+    font-size: 15px;
+    margin-top: 10px;
+    color: navy;
+    transition: 600ms;
+
+
+}
+.container input:hover{
+    font-size: 20px;
+}
+
+button{
+    font-size: 20px;
+    width: 20%;
+    border-radius: 5px;
+
+    margin-left: 40%;
+    margin-bottom: 10%;
+    transition: 600ms;
+
+
+
+}
+button:hover{
+    background-color: blue;
+    color: white;
+}
