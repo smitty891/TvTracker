@@ -1,0 +1,12 @@
+2021-04-04 19:23:16,786 INFO org.springframework.boot.StartupInfoLogger [main] Starting EnterpriseApplication using Java 14.0.2 on DESKTOP-BF8MKTV with PID 7044 (C:\Users\Josh Gyau\Pictures\TvTracker\target\classes started by Josh Gyau in C:\Users\Josh Gyau\Pictures\TvTracker)
+2021-04-04 19:23:16,790 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.4.2, Spring v5.3.3
+2021-04-04 19:23:16,792 INFO org.springframework.boot.SpringApplication [main] The following profiles are active: dev
+2021-04-04 19:23:18,994 INFO org.springframework.boot.StartupInfoLogger [main] Started EnterpriseApplication in 3.175 seconds (JVM running for 4.513)
+2021-04-04 19:24:02,514 DEBUG com.tvtracker.enterprise.TvTrackerController [http-nio-8080-exec-10] User Authentication endpoint.
+2021-04-04 19:24:02,515 INFO com.tvtracker.enterprise.TvTrackerController [http-nio-8080-exec-10] No credentials.
+2021-04-04 19:24:15,698 DEBUG com.tvtracker.enterprise.TvTrackerController [http-nio-8080-exec-5] User Authentication endpoint.
+2021-04-04 19:24:15,698 INFO com.tvtracker.enterprise.TvTrackerController [http-nio-8080-exec-5] No credentials.
+2021-04-04 19:28:00,510 DEBUG com.tvtracker.enterprise.TvTrackerController [http-nio-8080-exec-5] User Authentication endpoint.
+2021-04-04 19:28:00,510 INFO com.tvtracker.enterprise.TvTrackerController [http-nio-8080-exec-5] No credentials.
+2021-04-04 20:19:51,708 DEBUG com.tvtracker.enterprise.TvTrackerController [http-nio-8080-exec-3] User Authentication endpoint.
+2021-04-04 20:19:51,710 INFO com.tvtracker.enterprise.TvTrackerController [http-nio-8080-exec-3] No credentials.

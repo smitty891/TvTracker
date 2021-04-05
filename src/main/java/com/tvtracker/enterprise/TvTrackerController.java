@@ -310,6 +310,13 @@ public class TvTrackerController {
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 
+    /**
+     * @param username String uniquely identifying a user
+     * @param token Random generated character string used for authentication
+     * @throws SQLException
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private boolean isTokenInvalid(String username, String token) throws SQLException, IOException, ClassNotFoundException {
         return !userAccountService.isTokenValid(userAccountService.fetchUserAccount(username), token);
     }

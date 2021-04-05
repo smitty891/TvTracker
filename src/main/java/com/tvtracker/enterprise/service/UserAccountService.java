@@ -128,6 +128,7 @@ public class UserAccountService implements IUserAccountService {
     /**
      * @return randomly generated character string for authentication
      */
+
     private static String generateNewToken() {
         byte[] randomBytes = new byte[24];
         secureRandom.nextBytes(randomBytes);
