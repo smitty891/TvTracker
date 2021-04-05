@@ -5,7 +5,10 @@ input{
 
 }
 
+h2{
+    align-content: center;
 
+}
 .container{
     border: 2px solid white;
     max-width: 50%;
