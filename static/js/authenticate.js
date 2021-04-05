@@ -2,6 +2,12 @@ async function verifyAuthentication(){
     return  await authenticate(window.sessionStorage.getItem("TvTrackerUsername"), null, window.sessionStorage.getItem("TvTrackerToken"));
 }
 
+/**
+ * @param username
+ * @param password
+ * @param token
+ * @returns {Promise<unknown>}
+ */
 function authenticate(username, password, token){
     return new Promise(function (resolve, reject) {
         let xhr = new XMLHttpRequest();

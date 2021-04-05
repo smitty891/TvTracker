@@ -26,6 +26,9 @@ function updateMediaEntry(mediaEntry) {
     xhr.send(JSON.stringify(mediaEntry));
 }
 
+/**
+ * @param mediaEntry
+ */
 function deleteMediaEntry(mediaEntry) {
     const username = window.sessionStorage.getItem("TvTrackerUsername");
     const token = window.sessionStorage.getItem("TvTrackerToken");
@@ -54,6 +57,9 @@ function deleteMediaEntry(mediaEntry) {
     xhr.send(JSON.stringify(mediaEntry));
 }
 
+/**
+ * @param event
+ */
 function editIconClickHandler(event) {
     const infoElement = event.currentTarget;
 
@@ -98,6 +104,9 @@ function editIconClickHandler(event) {
     showPopup();
 }
 
+/***
+ * @param event
+ */
 function deleteIconClickHandler(event) {
     const entryId = event.currentTarget.getAttribute("entryId");
     let mediaEntry = this.mediaEntries.find(entry => entry.id == entryId);
@@ -142,6 +151,11 @@ function buildDashboard() {
 
     this.dashboard.appendTo("#dashDiv");
 }
+
+/***
+ * @param item
+ * @returns {string}
+ */
 
 function buildPanelHeader(item) {
     const watchedCheckVisibility = (item.watched  ? 'visible' : 'hidden');

@@ -1,3 +1,6 @@
+/**
+ * @param mediaEntry
+ */
 function saveMediaEntry(mediaEntry) {
     const username = window.sessionStorage.getItem("TvTrackerUsername");
     const token = window.sessionStorage.getItem("TvTrackerToken");
@@ -24,6 +27,9 @@ function saveMediaEntry(mediaEntry) {
     xhr.send(JSON.stringify(mediaEntry));
 }
 
+/**
+ * @param event
+ */
 function panelClickHandler(event) {
     const panelHeader = event.currentTarget.querySelector(".panelHeader");
     const panelContent = event.currentTarget.querySelector(".panelContent");
@@ -98,6 +104,9 @@ function buildDashboard() {
     this.dashboard.appendTo("#dashDiv");
 }
 
+/**
+ * @param mediaItems
+ */
 function addDashboardPanels(mediaItems) {
     buildDashboard();
 
@@ -127,6 +136,11 @@ function addDashboardPanels(mediaItems) {
     addPanelClickEvents();
 }
 
+/***
+ * @param text
+ * @param type
+ * @param page
+ */
 function callSearchAPI(text, type, page) {
     const API_KEY = "4ccbc10367msh3a0aae042eaac2ep10144bjsn5bf582dc9c1c";
     const API_HOST = "movie-database-imdb-alternative.p.rapidapi.com";

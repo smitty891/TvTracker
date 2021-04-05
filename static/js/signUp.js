@@ -22,6 +22,9 @@ function signup() {
     createUser(user);
 }
 
+/**
+ * @param user
+ */
 function createUser(user) {
     let xhr = new XMLHttpRequest();
 
