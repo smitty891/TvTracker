@@ -38,6 +38,7 @@ function signOut(){
     hideSignInMessage();
     window.sessionStorage.setItem("TvTrackerToken", undefined);
     window.sessionStorage.setItem("TvTrackerUsername", undefined);
+    window.location.href = '/';
 }
 
 function showSignInMessage(){
