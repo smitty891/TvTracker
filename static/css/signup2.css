@@ -1,0 +1,16 @@
+input{
+    font-size: 16px;
+    border-radius: 4px;
+    outline: none;
+    border: none;
+    transition: 1s;
+}
+input:hover{
+    border: 2px solid black;
+}
+
+
+.p-5{
+    background-color: #888888;
+    box-shadow: 3px 3px 5px black;
+}
