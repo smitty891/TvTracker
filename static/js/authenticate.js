@@ -1,5 +1,5 @@
 async function verifyAuthentication(){
-    return  await authenticate(window.sessionStorage.getItem("TvTrackerUsername"), null, window.sessionStorage.getItem("TvTrackerToken"));
+    return  await authenticate(window.sessionStorage.getItem("TvTrackerUsername") ?? "null", null, window.sessionStorage.getItem("TvTrackerToken") ?? "null");
 }
 
 function authenticate(username, password, token){
