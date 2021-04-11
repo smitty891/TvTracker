@@ -168,6 +168,8 @@ function searchBtnClickHandler(){
     this.currentSearchText = searchTextBox.value;
     this.page = 1;
     callSearchAPI.call(this, this.currentSearchText, this.currentMediaType, this.page);
+    let h1 = document.getElementById("BrowseH1");
+    changePageTitle(h1, this.currentMediaType);
 }
 
 function searchOnStartUp(){
@@ -216,3 +218,13 @@ async function startUp(){
     bindClickHandlers();
     searchOnStartUp();
 }
+function changePageTitle(title, spinner){
+    let value= spinner;
+    if (value=="series"){
+        title.innerText= "Browse Series";
+    }else {
+        title.innerText= "Browse Movies";
+    }
+
+}
+
