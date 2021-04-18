@@ -6,27 +6,19 @@ import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Repository
 @Profile("dev")
-public class MediaEntryDAO extends BaseDAO implements IMediaEntryDAO {
+public class MediaEntryDAO implements IMediaEntryDAO {
+    Map<Integer, MediaEntry> allMediaEntries = new HashMap<Integer, MediaEntry>();
 
-    public MediaEntryDAO() {
-        super.setTableName("MediaEntry");
-    }
-    /**
-     * Method for creating a new MediaEntry record in the database
-     *
-     * @param mediaEntry MediaEntry object to be saved as a record in the database
-     * @return MediaEntry object representation of new database record
-     */
+
     @Override
     public boolean save(MediaEntry mediaEntry) throws SQLException, IOException, ClassNotFoundException {
-        setAllColumnValues(mediaEntry);
-        return insert();
+        Integer mediaEntryId = mediaEntry.getId();
+        allMediaEntries.put(mediaEntryId, mediaEntry);
+        return true;
     }
 
     /**
@@ -37,8 +29,8 @@ public class MediaEntryDAO extends BaseDAO implements IMediaEntryDAO {
      */
     @Override
     public List<MediaEntry> fetchByUsername(String username) throws SQLException, IOException, ClassNotFoundException {
-        addWhere("username", username);
-        return parse(select());
+        List<MediaEntry> returnMediaEntries = new ArrayList(Collections.singleton(allMediaEntries.containsValue(username)));
+        return returnMediaEntries;
     }
 
     /**
@@ -49,13 +41,7 @@ public class MediaEntryDAO extends BaseDAO implements IMediaEntryDAO {
      */
     @Override
     public MediaEntry fetch(int id) throws SQLException, IOException, ClassNotFoundException {
-        addWhere("id", id);
-        List<MediaEntry> entries = parse(select());
-
-        if(entries.isEmpty())
-            return null;
-
-        return entries.get(0);
+        return allMediaEntries.get(id);
     }
 
     /**
@@ -66,37 +52,15 @@ public class MediaEntryDAO extends BaseDAO implements IMediaEntryDAO {
      */
     @Override
     public boolean delete(int id) throws SQLException, IOException, ClassNotFoundException {
-        addWhere("id", id);
-        return delete();
+        allMediaEntries.remove(id);
+        return true;
     }
 
-    /**
-     * Method for updating a MediaEntry record in the database
-     *
-     * @param mediaEntry MediaEntry object to be used for updating a database record
-     * @return boolean indicating a successful update
-     */
     @Override
     public boolean update(MediaEntry mediaEntry) throws SQLException, IOException, ClassNotFoundException {
-        setAllColumnValues(mediaEntry);
-        addWhere("id", mediaEntry.getId());
-        return update();
+        return false;
     }
 
-    /**
-     * This method sets all media entry column values for SQL statement
-     *
-     * @param mediaEntry source of column values
-     */
-    private void setAllColumnValues(MediaEntry mediaEntry) {
-        setColumnValue("title", mediaEntry.getTitle());
-        setColumnValue("type", mediaEntry.getType());
-        setColumnValue("platform", mediaEntry.getPlatform());
-        setColumnValue("description", mediaEntry.getDescription());
-        setColumnValue("imageUrl", mediaEntry.getImageUrl());
-        setColumnValue("watched", mediaEntry.isWatched() ? 1 : 0);
-        setColumnValue("username", mediaEntry.getUsername());
-    }
 
     /**
      * Method for parsing SQL results into List of MediaEntry objects
