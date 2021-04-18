@@ -1,4 +1,4 @@
-
+let clicks= 0;
 function saveMediaEntry(mediaEntry) {
     const username = window.sessionStorage.getItem("TvTrackerUsername");
     const token = window.sessionStorage.getItem("TvTrackerToken");
@@ -157,7 +157,12 @@ function callSearchAPI(text, type, page) {
         }
         hideSpinner();
         enableButtons();
-        resultNo.innerHTML= totalResults.toString()+" Search results for "+text
+        console.log(clicks);
+        resultNo.innerHTML= totalResults.toString()+" Search results for: "+text;
+
+
+
+
 
     }.bind(this);
 
@@ -176,6 +181,8 @@ function searchBtnClickHandler(){
     callSearchAPI.call(this, this.currentSearchText, this.currentMediaType, this.page);
     let h1 = document.getElementById("BrowseH1");
     changePageTitle(h1, this.currentMediaType);
+    clicks+=1;
+
 }
 
 function searchOnStartUp(){
