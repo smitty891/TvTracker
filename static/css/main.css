@@ -5,7 +5,9 @@ h1{
     font-size: 43px;
 
 }
-
+.results{
+    color: white;
+}
 .pageBtnDiv {
     margin-top: 15px;
     text-align: center;
