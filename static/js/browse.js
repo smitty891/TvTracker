@@ -1,3 +1,4 @@
+
 function saveMediaEntry(mediaEntry) {
     const username = window.sessionStorage.getItem("TvTrackerUsername");
     const token = window.sessionStorage.getItem("TvTrackerToken");
@@ -132,6 +133,8 @@ function callSearchAPI(text, type, page) {
     const API_HOST = "movie-database-imdb-alternative.p.rapidapi.com";
     const URL = "https://" + API_HOST + "/?s=" + escape(text) + "&page=" + page + "&r=json&type=" + type;
     let totalResults = 0;
+    let resultNo= document.getElementById("results");
+
 
     const xhr = new XMLHttpRequest();
     xhr.open('GET', URL, true);
@@ -154,12 +157,15 @@ function callSearchAPI(text, type, page) {
         }
         hideSpinner();
         enableButtons();
+        resultNo.innerHTML= totalResults.toString()+" Search results for "+text
+
     }.bind(this);
 
     showSpinner();
     disableButtons();
     xhr.send(null);
 }
+
 
 function searchBtnClickHandler(){
     let searchTextBox = document.getElementById("searchTextBox");
@@ -168,6 +174,8 @@ function searchBtnClickHandler(){
     this.currentSearchText = searchTextBox.value;
     this.page = 1;
     callSearchAPI.call(this, this.currentSearchText, this.currentMediaType, this.page);
+    let h1 = document.getElementById("BrowseH1");
+    changePageTitle(h1, this.currentMediaType);
 }
 
 function searchOnStartUp(){
@@ -216,3 +224,13 @@ async function startUp(){
     bindClickHandlers();
     searchOnStartUp();
 }
+function changePageTitle(title, spinner){
+    let value= spinner;
+    if (value=="series"){
+        title.innerText= "Browse Series";
+    }else {
+        title.innerText= "Browse Movies";
+    }
+
+}
+

@@ -1,5 +1,9 @@
 h1{
     text-align: center;
+    color: yellow;
+    text-shadow: 6px 6px 7px black;
+    font-size: 43px;
+
 }
 
 .pageBtnDiv {
@@ -8,6 +12,9 @@ h1{
 }
 .pageBtn {
     width:145px;
+}
+body{
+    background-color: darkblue;
 }
 
 .panelHeader {
