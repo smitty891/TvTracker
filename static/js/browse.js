@@ -129,7 +129,7 @@ function addDashboardPanels(mediaItems) {
 }
 
 function callSearchAPI(text, type, page) {
-    const API_KEY = "4ccbc10367msh3a0aae042eaac2ep10144bjsn5bf582dc9c1c";
+    const API_KEY = "";
     const API_HOST = "movie-database-imdb-alternative.p.rapidapi.com";
     const URL = "https://" + API_HOST + "/?s=" + escape(text) + "&page=" + page + "&r=json&type=" + type;
     let totalResults = 0;
